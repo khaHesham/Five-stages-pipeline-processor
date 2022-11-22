@@ -1,0 +1,14 @@
+module Register #(parameter W=16)(clk, rst, w_enable, D, Q);
+    input clk;
+    input rst;
+    input w_enable;
+    input [W-1:0] D;
+    output [W-1:0] Q;
+
+    reg [W-1:0] Q;
+
+    always @(posedge clk) begin
+        if (rst) Q = 0; 
+        else if(w_enable) Q = D;
+    end
+endmodule
