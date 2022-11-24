@@ -16,7 +16,7 @@ memRead,memWrite,memAddress,memData);
     input clk,rst;
     input memRead,memWrite,memData,memAddress;
     input [4*W-1:0] data_in;     //!all input data is here
-    output [3*W-1:0] data_out;   //! put all results here
+    output [3*W+3-1:0] data_out;   //! put all results here
 
     reg [W-1:0] WD;
     wire [W-1:0] RD;
@@ -35,7 +35,7 @@ memRead,memWrite,memAddress,memData);
     
     always @(posedge clk) begin
 
-       if (memAddress) begin //memaddr =1
+       if (memAddress) begin 
         addr=data_in[Rdst_end:Rdst_start];
        end else begin
         addr=data_in[Rsrc_end:Rsrc_start];
