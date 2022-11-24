@@ -18,22 +18,25 @@ module fetch(
   assign shiftamount=shiftamounttemp;
 
 
-assign memoinst[0]=16'b0001_001_111_0000;     //ldd r1,r7
-assign memoinst[1]=16'b0001_010_110_0000;     //ldd r2,r6
-assign memoinst[2]=16'b0101_000_011_0000;     //Nop r0,r3
-assign memoinst[3]=16'b0011_010_001_0000;     //add r2,r1
-assign memoinst[4]=16'b0100_000_001_0000;     //not r0,r1
-assign memoinst[5]=16'b0010_010_001_0000;     //std r2,r1
+assign memoinst[0]=16'b010001_001_111_0000;     //ldd r1,r7  i->01
+assign memoinst[1]=16'b010001_010_110_0000;     //ldd r2,r6  i->01
+assign memoinst[2]=16'b000101_000_011_0000;     //Nop r0,r3  r->00
+assign memoinst[3]=16'b000011_010_001_0000;     //add r2,r1  r->00
+assign memoinst[4]=16'b000100_000_001_0000;     //not r0,r1  r->00
+assign memoinst[5]=16'b010010_010_001_0000;     //std r2,r1  i->01
 
 assign pc=0;
 always @(posedge clk)
 begin
-     $display("pc=%b",pc);
+     //  $display("pc=%b",pc);
   opcodetemp= memoinst[pc][15:10]; 
+      // $display("opcode=%b",opcodetemp);
   srctemp=memoinst[pc][9:7];
+      // $display("srctemp=%b",srctemp);
   dsttemp=memoinst[pc][6:4];
+     //  $display("dsttemp=%b",dsttemp);
   shiftamounttemp=memoinst[pc][3:0];
-
+    //   $display("shiftamounttemp=%b",shiftamounttemp);
 pc = pc+1;
 end
 endmodule

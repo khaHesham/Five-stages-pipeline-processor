@@ -10,45 +10,59 @@ module tb_fetch;
 
  integer correct =0;
  integer failed =0;
- fetch test_fetch(clk);
-   always#50 clk = ~clk;
+ fetch test_fetch(clk,opcode,src,dst,shiftamount);
+   always#100 clk = ~clk;
     initial begin
 clk=0;
-
-#100;
-      if(opcode==4'b0001 && src==3'b001 && dst==3'b111 && shiftamount==4'b0000)
+#200;
+      if(opcode==4'b010001 && src==3'b001 && dst==3'b111 && shiftamount==4'b0000)
            correct=correct+1;
            else
            begin
            failed=failed+1;
-        $display("opcode=%b and src=%b and dst=%b and  shiftamount=%b ",opcode,src, dst,shiftamount);
+        $display("LDD ->opcode=%b and src=%b and dst=%b and  shiftamount=%b",opcode,src,dst,shiftamount);
            end
-#80;
-      if(opcode==4'b0001 && src==3'b010 && dst==3'b110 && shiftamount==4'b0000)
+#200;
+      if(opcode==4'b010001 && src==3'b010 && dst==3'b110 && shiftamount==4'b0000)
               correct=correct+1;
            else
+           begin
            failed=failed+1;
-#80;
-     if(opcode==4'b0101 && src==3'b000 && dst==3'b011 && shiftamount==4'b0000)
+          $display("LDD ->opcode=%b and src=%b and dst=%b and  shiftamount=%b",opcode,src,dst,shiftamount);
+            end
+#200;
+     if(opcode==4'b000101 && src==3'b000 && dst==3'b011 && shiftamount==4'b0000)
               correct=correct+1;
            else
+            begin
            failed=failed+1;
-#80;
-     if(opcode==4'b0011 && src==3'b010 && dst==3'b001 && shiftamount==4'b0000)
+          $display("NOP ->opcode=%b and src=%b and dst=%b and  shiftamount=%b",opcode,src,dst,shiftamount);
+            end
+#200;
+     if(opcode==4'b000011 && src==3'b010 && dst==3'b001 && shiftamount==4'b0000)
            correct=correct+1;
            else
+            begin
            failed=failed+1;
-#80;
-     if(opcode==4'b0100 && src==3'b000 && dst==3'b001 && shiftamount==4'b0000)
+         $display("ADD -> opcode=%b and src=%b and dst=%b and  shiftamount=%b",opcode,src,dst,shiftamount);
+            end
+#200;
+     if(opcode==4'b000100 && src==3'b000 && dst==3'b001 && shiftamount==4'b0000)
            correct=correct+1;
            else
+            begin
            failed=failed+1;
-#80;
-     if(opcode==4'b0010 && src==3'b010 && dst==3'b001 && shiftamount==4'b0000)
+          $display("NOT -> opcode=%b and src=%b and dst=%b and  shiftamount=%b",opcode,src,dst,shiftamount);
+            end
+#200;
+     if(opcode==4'b010010 && src==3'b010 && dst==3'b001 && shiftamount==4'b0000)
             correct=correct+1;
            else
+           begin
            failed=failed+1;
-
-          $display("correct_cases=%d and failed_cases=%d",correct,failed );
+          $display("STD -> opcode=%b and src=%b and dst=%b and  shiftamount=%b",opcode,src,dst,shiftamount);
+            end
+#200;
+        $display("correct_cases=%d and failed_cases=%d",correct,failed );
     end
 endmodule
