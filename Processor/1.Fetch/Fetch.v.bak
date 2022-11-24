@@ -28,12 +28,15 @@ assign memoinst[5]=16'b0010_010_001_0000;     //std r2,r1
 assign pc=0;
 always @(posedge clk)
 begin
-    
+     //  $display("pc=%b",pc);
   opcodetemp= memoinst[pc][15:10]; 
+      // $display("opcode=%b",opcodetemp);
   srctemp=memoinst[pc][9:7];
+      // $display("srctemp=%b",srctemp);
   dsttemp=memoinst[pc][6:4];
+     //  $display("dsttemp=%b",dsttemp);
   shiftamounttemp=memoinst[pc][3:0];
-
+    //   $display("shiftamounttemp=%b",shiftamounttemp);
 pc = pc+1;
 end
 endmodule
