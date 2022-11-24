@@ -35,12 +35,12 @@ module alu(
           4'b0001: //  LDD
          begin 
            ALU_Result = A;
- //$display("ALU_Result=%b for execute in LDD",ALU_Result);
+ $display("ALU_Result=%b for execute in LDD",ALU_Result);
          end
           4'b0010: //  STD
            begin
            ALU_Result = A; 
-       // $display("ALU_Result=%b for execute IN SORE",ALU_Result);
+        $display("ALU_Result=%b for execute IN SORE",ALU_Result);
           end
           default:
             ALU_Result= 4'bZ;
@@ -48,6 +48,6 @@ module alu(
         end
         else
  ALU_Result=0;
-  //$display("out=%b for execute",ALU_Out);
+  $display("out=%b for execute",ALU_Out);
     end
 endmodule
