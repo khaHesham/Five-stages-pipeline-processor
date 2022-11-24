@@ -33,7 +33,7 @@ memRead,memWrite,memAddress,memData);
 
     */
     
-    always @(posedge clk) begin
+    always @(*) begin
 
        if (memAddress) begin 
         addr=data_in[Rdst_end:Rdst_start];
