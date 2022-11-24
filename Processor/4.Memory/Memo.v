@@ -1,4 +1,4 @@
-module MemoryStage (clk,rst,data_in,data_out,WB,
+module Memory (clk,rst,data_in,data_out,WB,
 memRead,memWrite,memAddress,memData);
     
     localparam W = 16;

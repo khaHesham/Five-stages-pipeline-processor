@@ -1,4 +1,4 @@
-module alu(
+module ALU(
            input [15:0] A,B,  // ALU 8-bit Inputs                 
            input ALU_EN,clk,reset, // ALU ensble and clk and reset
            input [3:0] Function_Control, //functionopcode

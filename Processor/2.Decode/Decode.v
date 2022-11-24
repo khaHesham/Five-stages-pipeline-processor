@@ -1,4 +1,4 @@
-module DecodeStage(clk, rst, opcode,src,dst, regWrite, WD ,Rsrc, Rdst, MEM_signals, EX_signals, WB_signals);
+module Decode(clk, rst, opcode,src,dst, regWrite, WD ,Rsrc, Rdst, MEM_signals, EX_signals, WB_signals);
     
     localparam W = 16;
     localparam N = 3;
