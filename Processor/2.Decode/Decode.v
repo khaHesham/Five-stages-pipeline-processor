@@ -1,4 +1,4 @@
-module Decode(clk, rst, opcode,src,dst, regWrite, WD ,Rsrc, Rdst, MEM_signals, EX_signals, WB_signals);
+module Decode(clk, rst, opcode,src,dst, regWrite, WD, WA, Rsrc, Rdst, MEM_signals, EX_signals, WB_signals);
     
     localparam W = 16;
     localparam N = 3;
@@ -8,13 +8,15 @@ module Decode(clk, rst, opcode,src,dst, regWrite, WD ,Rsrc, Rdst, MEM_signals, E
     input [5:0] opcode;
     input [N-1:0] src; 
     input [N-1:0] dst;
+    input [2:0] WA; 
+    
+    output [3:0] MEM_signals;   // memRead(1), memWrite(1), memAddress(1), memData(1)
+    output [5:0] EX_signals;    // ALUop(4+1enable), shamSelt(1)
+    output [2:0] WB_signals;    // regWrite(1), WBsel(2)
+    output [W-1:0]  Rsrc, Rdst; //
 
-    output [4:0] MEM_signals; // memRead(1), memWrite(1), memAddress(1), memData(1)
-    output [5:0] EX_signals;  // ALUop(4+1enable), shamSelt(1)
-    output [2:0] WB_signals;  // regWrite(1), WBsel(2)
-    output [W-1:0]  Rsrc, Rdst;
+    // regFile regFile_inst(clk, rst, regWrite, WD, WA, src, dst, Rsrc, Rdst);
 
-    regFile #(W, N) regFile_inst(clk, rst, regWrite, WD, dst, src, dst, Rsrc, Rdst);
 
     Control_Unit CU(opcode, MEM_signals, EX_signals, WB_signals);
 

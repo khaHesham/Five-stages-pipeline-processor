@@ -1,6 +1,6 @@
 module ALU(
            input [15:0] A,B,  // ALU 8-bit Inputs                 
-           input ALU_EN,clk,reset, // ALU ensble and clk and reset
+           input ALU_EN,clk,rst, // ALU ensble and clk and rst
            input [3:0] Function_Control, //functionopcode
            output [15:0] ALU_Out, // ALU 8-bit Output
            output CarryOut,NegativeFlag,ZeroFlag // Carry Out Flag ,NegativeFlag,ZeroFlag
@@ -13,13 +13,13 @@ module ALU(
    // assign tmp ={1'b0,A} + {1'b0,B};
    // assign CarryOut = tmp[16]; // Carryout flag
 
-    assign ZeroFlag =( !ALU_Out && !reset) ? 1 : 0; // Zero flag
+    assign ZeroFlag =( !ALU_Out && !rst) ? 1 : 0; // Zero flag
 
-    assign NegativeFlag = (ALU_Out[15] && !reset) ? 1:0; // NegativeFlag
+    assign NegativeFlag = (ALU_Out[15] && !rst) ? 1:0; // NegativeFlag
 
     always @(posedge clk && ALU_EN==1)
     begin
-        if(!reset)
+        if(!rst)
         begin
         carry=0;
       case(Function_Control)
@@ -35,12 +35,12 @@ module ALU(
           4'b0001: //  LDD
          begin 
            ALU_Result = A;
- //$display("ALU_Result=%b for execute in LDD",ALU_Result);
+           //$display("ALU_Result=%b for execute in LDD",ALU_Result);
          end
           4'b0010: //  STD
            begin
            ALU_Result = A; 
-       // $display("ALU_Result=%b for execute IN SORE",ALU_Result);
+           // $display("ALU_Result=%b for execute IN SORE",ALU_Result);
           end
           default:
             ALU_Result= 4'bZ;
@@ -48,6 +48,6 @@ module ALU(
         end
         else
  ALU_Result=0;
-  //$display("out=%b for execute",ALU_Out);
+ //$display("out=%b for execute",ALU_Out);
     end
 endmodule

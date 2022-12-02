@@ -1,4 +1,7 @@
-module regFile #(parameter W=16, N=3) (clk, rst, regWrite, WD, WA, src, dst, Rsrc, Rdst);
+module regFile #(parameter W=16 ) (clk, rst, regWrite, WD, WA, src, dst, Rsrc, Rdst);
+    
+    localparam N=3;
+    
     input clk;
     input rst;
     input regWrite;

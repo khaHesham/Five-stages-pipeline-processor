@@ -6,6 +6,8 @@ module Control_Unit (opcode,MEM_signals,EX_signals,WB_signals);
     localparam LDD =6'b000001 ;
     localparam STD =6'b000010 ;
 
+    input [5:0] opcode;
+
     output reg [3:0] MEM_signals; //memRead(1), memWrite(1), memAddress(1), memData(1)
     output reg [5:0] EX_signals;  //ALUop(4+1enable), shamSelt(1)
     output reg [2:0] WB_signals;  //regWrite(1), WBsel(2)
@@ -50,8 +52,8 @@ module Control_Unit (opcode,MEM_signals,EX_signals,WB_signals);
             ADD: begin 
                 EX_signals[5:1]=4'b0010;
                 EX_signals[1]=1;
-                MemRead=0;
-                MemWrite=0;
+                MEM_signals[3]=0;
+                MEM_signals[2]=0;
                 WB_signals=3'b101;
             end
             LDD: begin 

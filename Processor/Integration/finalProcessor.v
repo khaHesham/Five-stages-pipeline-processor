@@ -1,13 +1,20 @@
 
-module Processor ();
+`include "../1.Fetch/Fetch.v"
+`include "../2.Decode/Decode.v"
+`include "../3.Execute/Execute.v"
+`include "../4.Memory/Memo.v"
+`include "../5.WriteBack/WB.v"
+
+
+module Processor (clk,rst);
     input clk,rst;
 //===========================  LOCAL PARAMETERS    ================================    
     localparam W = 16;
     localparam N = 3;
-    localparam F_D_SIZE = 2*W;
-    localparam D_E_SIZE = 18+2*W;
-    localparam E_M_SIZE = 2*W;
-    localparam M_W_SIZE = 18+3*W;
+    localparam F_D_SIZE = W;
+    localparam D_E_SIZE = 17+2*W;
+    localparam E_M_SIZE = 17+3*W;
+    localparam M_W_SIZE = 3+2*W;
 
 //=================================================================================
 //========================     FETCH Parameters    ================================
@@ -15,7 +22,7 @@ module Processor ();
     wire [5:0] opcode_in,opcode_out;
     wire [2:0] src_in,src_out;
     wire [2:0] dst_in,dst_out;
-    wire [3:0] shiftamount_in,shiftamount_out;
+    wire [3:0] shiftamount_in,shiftamount_out,shiftamount_out_2;
 
 //=================================================================================
 //========================     DECODE Parameters    ================================
@@ -23,30 +30,39 @@ module Processor ();
     wire regWrite; //regWrite coming from WB
     wire [W-1:0] WD;    //WD coming from WB
 
-    wire [4:0] MEM_signals_in, MEM_signals_out; // memRead(1), memWrite(1), memAddress(1), memData(1)
-    wire [5:0] EX_signals_in, EX_signals_out;  // ALUop(4+1enable), shamSelt(1)
-    wire [2:0] WB_signals_in, WB_signals_out;  // regWrite(1), WBsel(2)
+    wire [3:0] MEM_signals_in, MEM_signals_out,MEM_signals_out_2; // memRead(1), memWrite(1), memAddress(1), memData(1)
+    wire [5:0] EX_signals_in, EX_signals_out,EX_signals_out_2;  // ALUop(4+1enable), shamSelt(1)
+    wire [2:0] WB_signals_in, WB_signals_out,WB_signals_out_2,WB_signals_out_3;  // regWrite(1), WBsel(2)
     
-    wire [W-1:0]  Rsrc_in,Rsrc_out, Rdst_in,Rdst_out;
-//=================================================================================
-//========================     EXECUTE PARAMETERS    ==============================
-//=================================================================================
+    wire [W-1:0]  Rsrc_in,Rsrc_out, Rdst_in,Rdst_out, Rsrc_out_2,Rdst_out_2;
+    wire [2:0] WA;
+//================================================================================
+//                |=={*}==|     EXECUTE PARAMETERS    |=={*}==|
+    wire [15:0] B;
+    wire [15:0] ALU_Out,ALU_Out_2,ALU_Out_3,ALU_Out_4;
+    reg [2:0] flags;
+
+//================================================================================
+//                              MEMORY PARAMETERS
+    wire [15:0] RD_in,RD_out;
+//================================================================================
 
     fetch FetchStage(clk,opcode_in,src_in,dst_in,shiftamount_in);
     // 
     Register #(F_D_SIZE) F_D_buffer(clk, rst, 1, {opcode_in, src_in, dst_in, shiftamount_in}, {opcode_out, src_out, dst_out, shiftamount_out});
     // 
-    Decode DecodeStage(clk, rst, opcode_out, src_out, dst_out, regWrite, WD ,Rsrc_in, Rdst_in, MEM_signals_in, EX_signals_in, WB_signals_in);
-    // 
+    Decode DecodeStage(clk, rst, opcode_out, src_out, dst_out, regWrite, WD ,WA,Rsrc_in, Rdst_in, MEM_signals_in, EX_signals_in, WB_signals_in);
+    //                clk, rst, opcode,src,dst, regWrite, WD, WA,Rsrc, Rdst, MEM_signals, EX_signals, WB_signals
     Register #(D_E_SIZE) D_E_buffer(clk, rst, 1,{MEM_signals_in, EX_signals_in, WB_signals_in, Rsrc_in, Rdst_in, shiftamount_in} ,{MEM_signals_out, EX_signals_out, WB_signals_out, Rsrc_out, Rdst_out, shiftamount_out});
     //
-    ALU ALU_Stage(A,B,ALU_EN,clk,reset,Function_Control, ALU_Out, CarryOut,NegativeFlag,ZeroFlag );
+    assign B=(EX_signals_out[0])? Rdst_out:{12'b000000000000,shiftamount_out};
+    ALU ALU_Stage(Rsrc_out,B,EX_signals_out[1],clk,rst,EX_signals_out[5:2], ALU_Out, flags[2],flags[1],flags[0] );
     //
-    Register #(E_M_SIZE) E_M_buffer(clk, rst, 1,{MEM_signals_in, EX_signals_in, WB_signals_in, Rsrc_in, Rdst_in, shiftamount_in} ,{MEM_signals_out, EX_signals_out, WB_signals_out, Rsrc_out, Rdst_out, shiftamount_out});
+    Register #(E_M_SIZE) E_M_buffer(clk, rst, 1,{MEM_signals_out, EX_signals_out, WB_signals_out, Rsrc_out, Rdst_out, shiftamount_out,ALU_Out} ,{MEM_signals_out_2, EX_signals_out_2, WB_signals_out_2, Rsrc_out_2, Rdst_out_2, shiftamount_out_2,ALU_Out_2});
     // 
-    Memory MemoryStage(clk,rst,data_in,data_out,WB,memRead,memWrite,memAddress,memData);
+    Memo MemoryStage(clk,rst,{Rsrc_out_2,Rdst_out_2},RD_in,WB,MEM_signals_out_2[3],MEM_signals_out_2[2],MEM_signals_out_2[1],MEM_signals_out_2[0]);
     //
-    Register #(M_W_SIZE) M_W_buffer(clk, rst, 1,{MEM_signals_in, EX_signals_in, WB_signals_in, Rsrc_in, Rdst_in, shiftamount_in} ,{MEM_signals_out, EX_signals_out, WB_signals_out, Rsrc_out, Rdst_out, shiftamount_out});
+    Register #(M_W_SIZE) M_W_buffer(clk, rst, 1,{WB_signals_out_2,RD_in,ALU_Out_2} ,{ WB_signals_out_3, RD_out, ALU_Out_3});
 
-    
+ 
 endmodule
