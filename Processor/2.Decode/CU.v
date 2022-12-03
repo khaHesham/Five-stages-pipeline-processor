@@ -36,46 +36,35 @@ module Control_Unit (opcode,MEM_signals,EX_signals,WB_signals);
     always @(*) begin
         case (opcode)
             NOP: begin 
-                EX_signals[1]=0;
-                EX_signals[5:1]=4'bzzzz;
-                MEM_signals[3]=0; //memread
-                MEM_signals[2]=0; //memwrite
+                EX_signals=6'b000010;
+                MEM_signals=4'b0000; 
                 WB_signals=3'b011;
             end
             NOT: begin 
-                EX_signals[5:1]=4'b0001;
-                EX_signals[1]=1;
-                MEM_signals[3]=0;
-                MEM_signals[2]=0;
+                EX_signals=6'b000110;
+                MEM_signals=4'b0000;
                 WB_signals=3'b101;
             end
             ADD: begin 
-                EX_signals[5:1]=4'b0010;
-                EX_signals[1]=1;
-                MEM_signals[3]=0;
-                MEM_signals[2]=0;
+                EX_signals=6'b001010;
+                MEM_signals=4'b0000;
                 WB_signals=3'b101;
             end
             LDD: begin 
-                EX_signals[1]=0;
-                MEM_signals[3]=1;
-                MEM_signals[2]=0;
-                MEM_signals[1]= 0 ; // Rsrc
+                EX_signals=6'bxxxx00;
+                MEM_signals=4'b1000;
                 WB_signals=3'b100;
 
             end
             STD: begin 
-                EX_signals[1]=0;
-                MEM_signals[3]=0;
-                MEM_signals[2]=1;
-                MEM_signals[1]=1;   // Rdst
+                EX_signals=6'bxxxx00;
+                MEM_signals[3]=4'b0110;   
                 WB_signals=3'b0xx;
-                MEM_signals[0]= 0;
             end
                 default: begin //NOP
-                EX_signals[1]=0;
-                MEM_signals[3]=0;
-                MEM_signals[2]=0;
+                EX_signals=6'b000010;
+                MEM_signals=4'b0000; 
+                WB_signals=3'b011;
             end
         endcase
     end

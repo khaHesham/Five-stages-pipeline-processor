@@ -15,7 +15,7 @@ module Decode(clk, rst, opcode,src,dst, regWrite, WD, WA, Rsrc, Rdst, MEM_signal
     output [2:0] WB_signals;    // regWrite(1), WBsel(2)
     output [W-1:0]  Rsrc, Rdst; //
 
-    // regFile regFile_inst(clk, rst, regWrite, WD, WA, src, dst, Rsrc, Rdst);
+    regFile regFile_inst(clk, rst, regWrite, WD, WA, src, dst, Rsrc, Rdst);
 
 
     Control_Unit CU(opcode, MEM_signals, EX_signals, WB_signals);
