@@ -23,27 +23,32 @@ module ALU(
         begin
         carry=0;
       case(Function_Control)
-          4'b0011: // Addition
+          4'b0010: // Addition
            begin
            ALU_Result = A + B ;
            carry=ALU_Result[16];
            end
-          4'b0100: //  NOT DEST
+          4'b0001: //  NOT DEST
+          begin
            ALU_Result = ~B;
-          4'b0101: //  NOP
+          end
+          4'b0000: //  NOP
+          begin
            ALU_Result =0;
-          4'b0001: //  LDD
-         begin 
-           ALU_Result = A;
-           //$display("ALU_Result=%b for execute in LDD",ALU_Result);
-         end
+          end
+        //   4'bXXXX: //  LDM
+        //  begin 
+        //    ALU_Result = A;
+        //    //$display("ALU_Result=%b for execute in LDD",ALU_Result);
+        //  end
           4'b0010: //  STD
            begin
            ALU_Result = A; 
            // $display("ALU_Result=%b for execute IN SORE",ALU_Result);
           end
-          default:
-            ALU_Result= 4'bZ;
+          default:begin
+            ALU_Result= 4'hZ;
+          end
         endcase
         end
         else

@@ -20,17 +20,21 @@ module fetch(
   integer i;
 
  initial $readmemb("D:/GITHUB/Five-stages-pipeline-processor-/Processor/1.Fetch/memory.txt",memoinst);
- initial begin
-    for (i =0 ;i<6 ;i=i+1 ) begin
-    $display("Memory location %d: %b\n",i,memoinst[i]);
- end
- end
-// assign memoinst[0]=16'b010001_001_111_0000;     //ldd r1,r7  i->01
+ 
+// assign memoinst[0]=16'b010001_001_111_0000;     //ld r1,r7  i->01
 // assign memoinst[1]=16'b010001_010_110_0000;     //ldd r2,r6  i->01
 // assign memoinst[2]=16'b000101_000_011_0000;     //Nop r0,r3  r->00
 // assign memoinst[3]=16'b000011_010_001_0000;     //add r2,r1  r->00
 // assign memoinst[4]=16'b000100_000_001_0000;     //not r0,r1  r->00
 // assign memoinst[5]=16'b010010_010_001_0000;     //std r2,r1  i->01
+// 1. LDM R1,0h          010001_001_xxx_0000
+//                       0000_1111_1111_1111
+// 2. LDM R2,2h          010001_010_xxx_0000;
+//                       0000_1111_0000_1111
+// 3. NOP                000101_000_011_0000
+// 4. ADD R2,R1          000011_010_001_0000
+// 5. NOT R1             000100_000_001_0000
+// 6. STD R2,R1          010010_010_001_0000
 
 assign pc=0;
 always @(posedge clk)
