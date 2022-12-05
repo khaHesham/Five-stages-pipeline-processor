@@ -3,11 +3,10 @@ module Decode_TB;
 
 //Inputs
  reg clk,rst;
- wire [15:0] B;
  reg [15:0] WD;
  wire flush;
  reg [2:0] src;
- wire [2:0] dst;
+ reg [2:0] dst;
  wire [15:0] Rsrc,Rdst;  //msh sam3aaaaak
  reg [2:0] WA;
 
@@ -17,9 +16,10 @@ module Decode_TB;
  wire [2:0] WB_signals;  // regWrite(1), WBsel(2)
  reg regWrite;
  wire [5:0] opcode;
+ reg [3:0] shiftamount;
 
 //Outputs
- Decode decodeStage(clk, rst, opcode,src,dst,shiftamount, regWrite, WD, WA, Rsrc, Rdst,Imm, MEM_signals, EX_signals, WB_signals,flush);
+ Processor processor_inst(clk, rst, opcode,src,dst,shiftamount, regWrite, WD, WA, Rsrc, Rdst,Imm, MEM_signals, EX_signals, WB_signals,flush);
    always#50 clk = ~clk;
     initial begin
     clk=1;
@@ -27,10 +27,12 @@ module Decode_TB;
 
     #100;
     rst=0;
+    opcode = 6'b000101;
     regWrite=1;
     WA=3'b000;
     WD=16'hffff;
     src=3'b000;
+    dst = 3'b001;
 
     #300;
     $display("clk %d rst %d opcode %d src %d dst %d shiftamount %d regWrite %d WD %d WA %d Rsrc %d Rdst %d Imm %d MEM_signals %p EX_signals %p WB_signals %p flush %d",clk, rst, opcode,src,dst,shiftamount, regWrite, WD, WA, Rsrc, Rdst,Imm, MEM_signals, EX_signals, WB_signals,flush);

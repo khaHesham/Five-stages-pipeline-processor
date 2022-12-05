@@ -1,23 +1,24 @@
 module fetch(
     input clk,
+    input rst,
     output [5:0] opcode,
     output [2:0] src,
     output [2:0] dst,
     output [3:0] shiftamount
 );
-  reg [31:0] pc;
+  wire [31:0] pc;
   reg [15:0] memoinst[2*10^6-1:0];
-  reg [5:0] opcodetemp;
-  reg [2:0] srctemp;
-  reg [2:0] dsttemp;
-  reg [3:0] shiftamounttemp;
+//   reg [5:0] opcodetemp;
+//   reg [2:0] srctemp;
+//   reg [2:0] dsttemp;
+//   reg [3:0] shiftamounttemp;
 
-  assign opcode=opcodetemp;
-  assign src=srctemp;
-  assign dst=dsttemp;
-  assign shiftamount=shiftamounttemp;
+//   assign opcode=opcodetemp;
+//   assign src=srctemp;
+//   assign dst=dsttemp;
+//   assign shiftamount=shiftamounttemp;
 
-  integer i;
+//   integer i;
 
  initial $readmemb("D:/GITHUB/Five-stages-pipeline-processor-/Processor/1.Fetch/memory.txt",memoinst);
  
@@ -36,18 +37,26 @@ module fetch(
 // 5. NOT R1             000100_000_001_0000
 // 6. STD R2,R1          010010_010_001_0000
 
-assign pc=0;
-always @(posedge clk)
-begin
-     //  $display("pc=%b",pc);
-  opcodetemp= memoinst[pc][15:10]; 
-      // $display("opcode=%b",opcodetemp);
-  srctemp=memoinst[pc][9:7];
-      // $display("srctemp=%b",srctemp);
-  dsttemp=memoinst[pc][6:4];
-     //  $display("dsttemp=%b",dsttemp);
-  shiftamounttemp=memoinst[pc][3:0];
-    //   $display("shiftamounttemp=%b",shiftamounttemp);
-pc = pc+1;
-end
+//assign pc=0;
+Register #(32) pc_inst(clk, rst, 1'b1, pc+1, pc);
+// always @(posedge clk)
+// begin
+//      //  $display("pc=%b",pc);
+//   opcodetemp= memoinst[pc][15:10]; 
+//       // $display("opcode=%b",opcodetemp);
+//   srctemp=memoinst[pc][9:7];
+//       // $display("srctemp=%b",srctemp);
+//   dsttemp=memoinst[pc][6:4];
+//      //  $display("dsttemp=%b",dsttemp);
+//   shiftamounttemp=memoinst[pc][3:0];
+//     //   $display("shiftamounttemp=%b",shiftamounttemp);
+// pc = pc+1;
+// end
+assign opcode= memoinst[pc][15:10]; 
+    // $display("opcode=%b",opcode);
+assign src=memoinst[pc][9:7];
+    // $display("src=%b",src);
+assign dst=memoinst[pc][6:4];
+    //  $display("dst=%b",dst);
+assign shiftamount=memoinst[pc][3:0];
 endmodule
