@@ -73,7 +73,7 @@ module Processor (clk,rst,flush,B,WD,src_out,dst_out,Rsrc_in,Rdst_in,WA,ALU_Out,
 //                           
 
 
-    //!                                                     🔴FETCH STAGE🔴
+    //!                                                     🔴 FETCH STAGE 🔴
     fetch FetchStage(clk,opcode_in,src_in,dst_in,shiftamount_in);
     
     assign Imm_in = {opcode_in, src_in, dst_in, shiftamount_in};
@@ -81,14 +81,20 @@ module Processor (clk,rst,flush,B,WD,src_out,dst_out,Rsrc_in,Rdst_in,WA,ALU_Out,
 
 
     Buffer #(F_D_SIZE) F_D_buffer(clk, rst, 1'b1,instr_in,instr_out );
-    //!                                                      🔴DECODE STAGE🔴 
+    //!                                                      🔴 DECODE STAGE 🔴
     assign {opcode_out, src_out, dst_out, shiftamount_out}= instr_out;
+<<<<<<< Updated upstream
     Decode DecodeStage(clk, rst, opcode_out, src_out, dst_out, WB_signals_out_3[2], WD ,WA,Rsrc_in, Rdst_in, MEM_signals_in, EX_signals_in, WB_signals_in,flush);
     
     assign Decode_in={MEM_signals_in, EX_signals_in, WB_signals_in, Rsrc_in, Rdst_in, shiftamount_in, Imm_in};
+=======
+    Decode DecodeStage (clk, rst, opcode_out, src_out, dst_out, WB_signals_out_3[2], WD ,WA,Rsrc_in, Rdst_in, MEM_signals_in, EX_signals_in, WB_signals_in,flush);
+
+    assign Decode_in = {MEM_signals_in, EX_signals_in, WB_signals_in, Rsrc_in, Rdst_in, shiftamount_in, Imm_in};
+>>>>>>> Stashed changes
     Buffer #(D_E_SIZE) D_E_buffer(clk, rst, 1'b1,Decode_in ,Decode_out);
     assign  {MEM_signals_out, EX_signals_out, WB_signals_out, Rsrc_out, Rdst_out, shiftamount_out,Imm_out} = Decode_out;
-    //!                                                     🔴EXECUTE STAGE🔴
+    //!                                                     🔴 EXECUTE STAGE 🔴
 
     assign B=(EX_signals_out[0]==1'b1)? Rdst_out:{12'b000000000000,shiftamount_out};
     ALU ALU_Stage(Rsrc_out,B,EX_signals_out[1],clk,rst,EX_signals_out[5:2], ALU_Out, flags[2],flags[1],flags[0] );
@@ -96,14 +102,14 @@ module Processor (clk,rst,flush,B,WD,src_out,dst_out,Rsrc_in,Rdst_in,WA,ALU_Out,
     assign Execute_in = {MEM_signals_out, EX_signals_out, WB_signals_out, Rsrc_out, Rdst_out, shiftamount_out,ALU_Out,Imm_out};
     Buffer #(E_M_SIZE) E_M_buffer(clk, rst, 1'b1,Execute_in,Execute_out);
     assign {MEM_signals_out_2, EX_signals_out_2, WB_signals_out_2, Rsrc_out_2, Rdst_out_2, shiftamount_out_2,ALU_Out_2,Imm_out_2}=Execute_out;
-    //!                                                     🔴MEMORY STAGE🔴
+    //!                                                     🔴 MEMORY STAGE 🔴
 
     Memo MemoryStage(clk,rst,{Rsrc_out_2,Rdst_out_2},RD_in,MEM_signals_out_2[3],MEM_signals_out_2[2],MEM_signals_out_2[1],MEM_signals_out_2[0]);
     
     assign Memory_in = {WB_signals_out_2,RD_in,ALU_Out_2,Imm_out_2};
     Buffer #(M_W_SIZE) M_W_buffer(clk, rst, 1'b1,Memory_in ,Memory_out);
     assign {WB_signals_out_3, mux_lines[0], mux_lines[1],mux_lines[2]}=Memory_out;
-    //!                                                    🔴WRITE_BACK STAGE🔴
+    //!                                                    🔴 WRITE_BACK STAGE 🔴
     MUX #(W,N-1) WB_Mux(mux_lines,WB_signals_out_3[1:0],WD);
     
 endmodule
