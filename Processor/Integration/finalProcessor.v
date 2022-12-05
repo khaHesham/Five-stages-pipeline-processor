@@ -84,7 +84,7 @@ module Processor (clk,rst,flush,B,WD,src_out,dst_out,Rsrc_in,Rdst_in,WA,ALU_Out,
     //!                                                      🔴DECODE STAGE🔴 
     assign {opcode_out, src_out, dst_out, shiftamount_out}= instr_out;
     Decode DecodeStage(clk, rst, opcode_out, src_out, dst_out, WB_signals_out_3[2], WD ,WA,Rsrc_in, Rdst_in, MEM_signals_in, EX_signals_in, WB_signals_in,flush);
-
+    
     assign Decode_in={MEM_signals_in, EX_signals_in, WB_signals_in, Rsrc_in, Rdst_in, shiftamount_in, Imm_in};
     Buffer #(D_E_SIZE) D_E_buffer(clk, rst, 1'b1,Decode_in ,Decode_out);
     assign  {MEM_signals_out, EX_signals_out, WB_signals_out, Rsrc_out, Rdst_out, shiftamount_out,Imm_out} = Decode_out;

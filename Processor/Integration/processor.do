@@ -1,2 +1,2 @@
-vsim processor_TB
+vsim DecodeTB
 add wave *
