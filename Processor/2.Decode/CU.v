@@ -24,13 +24,16 @@ module Control_Unit (opcode,MEM_signals,EX_signals,WB_signals,flush);
     |  Imm | 1 10                 |
     |  xxx | 0 11                 |
 
+    memRead 1 ==> Rdst
+    memData 1==> Rdst
+
     phase 1:
         R-type  • NOP [101] |  ALUOP=> 0000 | ALU_en : 1 | 
                 • NOT [100] |  ALUOP=> 0001 | ALU_en : 1 | WB : 101
                 • ADD [011] |  ALUOP=> 0010 | ALU_en : 1 | WB : 101
         Imm
                 • LDM [001] |  ALUOP=> xxxx | ALU_en : 0 | MemRead : 1 | MemAddress : 0 | WB : 110
-                • STD [010] |  ALUOP=> xxxx | ALU_en : 0 | MemWrite: 1 | MemAddress : 1 | WB : 0xx | MemData : 0    
+                • STD [010] |  ALUOP=> xxxx | ALU_en : 0 | MemWrite: 1 | MemAddress : 1 | WB : 000 | MemData : 0    
     */
 
     always @(*) begin
@@ -66,7 +69,7 @@ module Control_Unit (opcode,MEM_signals,EX_signals,WB_signals,flush);
             STD: begin
                 flush=1'b0;
                 EX_signals=6'b000000;
-                MEM_signals[3]=4'b0110;   
+                MEM_signals=4'b0110;   
                 WB_signals=3'b0xx;
                 
             end

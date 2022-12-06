@@ -1,27 +1,30 @@
 `include "../1.Fetch/Fetch.v"
 `include "../2.Decode/Decode.v"
+`include "../3.Execute/Execute.v"
+`include "../4.Memory/Memo.v"
+`include "../5.WriteBack/WB.v"
 
-module Processor(clk, rst, regWrite, WD, WA, Rsrc_out_2, Rdst_out_2,Imm_out_2,ALU_Out_2,MEM_signals_out_2, EX_signals_out_2, WB_signals_out_2,flags_out);
+module Processor(clk, rst, regWrite, WD, WA_3, Rsrc_out_2, Rdst_out_2,Imm_out_3,ALU_Out_3,RD_out,MEM_signals_out_2, EX_signals_out_2, WB_signals_out_3,flags_out);
     
     localparam W = 16;
     localparam N = 3;
     localparam F_D_SIZE = W;
-    localparam D_E_SIZE = 17+3*W;
-    localparam E_M_SIZE = 17+4*W;
-    localparam M_W_SIZE = 3+2*W;
+    localparam D_E_SIZE = 3*W + 20;
+    localparam E_M_SIZE = 4*W + 10;
+    localparam M_W_SIZE = 3*W + 6;
+    localparam SIZE = 11;
 
     input clk, rst, regWrite; //regWrite coming from WB
-    input [W-1:0] WD; //WD coming from WB
-    input [2:0] WA; 
-    
-
-   
+    input [W-1:0] WD; //WD coming from WB 
+  
 
     output [2:0] flags_out;
     output [3:0] MEM_signals_out_2;
     output [5:0] EX_signals_out_2;
-    output [2:0] WB_signals_out_2;
-    output [15:0] ALU_Out_2, Rsrc_out_2, Rdst_out_2, Imm_out_2;
+    output [2:0] WB_signals_out_3;
+    output [15:0] ALU_Out_3, Rsrc_out_2, Rdst_out_2, Imm_out_3;
+    output [15:0] RD_out;
+    output [2:0] WA_3;
 //======================================================================================================================
 
     wire [3:0] MEM_signals;   // memRead(1), memWrite(1), memAddress(1), memData(1)
@@ -33,25 +36,28 @@ module Processor(clk, rst, regWrite, WD, WA, Rsrc_out_2, Rdst_out_2,Imm_out_2,AL
     wire [2:0]flags;
     wire [3:0] MEM_signals_in;
     wire [5:0] EX_signals_in;   
-    wire [2:0] WB_signals_in;
+    wire [2:0] WB_signals_in,WB_signals_out_2;
     wire [5:0] opcode_out;
     wire [2:0] src_out, dst_out;
     wire [3:0] shiftamount_2,shiftamount_4;
-    wire [15:0] Imm_in, Rsrc_in, Rdst_in, instr_in, instr_out;
+    wire [15:0] Imm_in, Rsrc_in, Rdst_in, instr_in, instr_out, Imm_out_2;
     wire [5:0] opcode;
     wire [N-1:0] src; 
     wire [N-1:0] dst;
     wire [3:0] shiftamount;
     wire [3:0] shiftamount_3;
-    wire [15:0] ALU_Out;
+    wire [15:0] ALU_Out,ALU_Out_2;
     wire [15:0] B;
+    wire [15:0] RD_in;
+    wire [2:0] WA_1, WA_2, WA_3;
+    wire [2:0] WA; 
 
 
     wire [D_E_SIZE-1:0] Decode_in, Decode_out;
-    wire [E_M_SIZE-1:0] Execute_in,Execute_out;
+    wire [E_M_SIZE-1:0] Execute_in, Execute_out;
+    wire [M_W_SIZE-1:0] Memory_in, Memory_out;
 
-
-
+    wire [W-1:0] mux_lines [3:0];
 
 
 
@@ -64,21 +70,34 @@ module Processor(clk, rst, regWrite, WD, WA, Rsrc_out_2, Rdst_out_2,Imm_out_2,AL
     Buffer #(F_D_SIZE) F_D_buffer(clk, rst, 1'b1,instr_in,instr_out );
     assign {opcode_out, src_out, dst_out, shiftamount_2}= instr_out;
 
-    Decode DecodeStage(clk, rst, opcode,src_out, dst_out,shiftamount_2, regWrite, WD, WA, Rsrc_in, Rdst_in,  MEM_signals_in, EX_signals_in, WB_signals_in,flush);
+    Decode DecodeStage(clk, rst, opcode,src_out, dst_out,shiftamount_2, regWrite, WD, WA_3, Rsrc_in, Rdst_in,  MEM_signals_in, EX_signals_in, WB_signals_in,flush);
 
-    assign Decode_in={MEM_signals_in, EX_signals_in, WB_signals_in, Rsrc_in, Rdst_in, shiftamount_2, Imm_in};
+    assign Decode_in={MEM_signals_in, EX_signals_in, WB_signals_in, Rsrc_in, Rdst_in, shiftamount_2, Imm_in,dst_out}; //16*3 +20
     Buffer #(D_E_SIZE) D_E_buffer(clk, rst, 1'b1,Decode_in ,Decode_out);
-    assign  {MEM_signals, EX_signals, WB_signals, Rsrc, Rdst, shiftamount_3,Imm} = Decode_out;
+    assign  {MEM_signals, EX_signals, WB_signals, Rsrc, Rdst, shiftamount_3,Imm,WA_1} = Decode_out;
 
     assign B = (EX_signals[0]==1'b0)? Rdst : { 12'b000000000000,shiftamount_3 };
     ALU ALU_Stage(Rsrc,B,EX_signals[1],EX_signals[5:2], ALU_Out, flags[2],flags[1],flags[0] );
-    Register #(3) flags_inst(clk, rst, 1'b1,flags,flags_out );
+    Register #(3) flags_inst(clk, rst, 1'b1 ,flags, flags_out);
 
-    assign Execute_in = {MEM_signals, EX_signals, WB_signals, Rsrc, Rdst, shiftamount_3,ALU_Out,Imm};
+    assign Execute_in = {MEM_signals, WB_signals, Rsrc, Rdst,ALU_Out,Imm,WA_1};  // 4*16 + 10
     Buffer #(E_M_SIZE) E_M_buffer(clk, rst, 1'b1,Execute_in,Execute_out);
-    assign {MEM_signals_out_2, EX_signals_out_2, WB_signals_out_2, Rsrc_out_2, Rdst_out_2, shiftamount_4,ALU_Out_2,Imm_out_2}=Execute_out;
+    assign {MEM_signals_out_2, WB_signals_out_2, Rsrc_out_2, Rdst_out_2,ALU_Out_2,Imm_out_2,WA_2}=Execute_out;
 
+    Memo memoryStage (clk,rst,Rsrc_out_2,Rdst_out_2,RD_in,MEM_signals_out_2[3],MEM_signals_out_2[2],MEM_signals_out_2[1],MEM_signals_out_2[0]);
 
+    assign Memory_in = { WB_signals_out_2,RD_in,ALU_Out_2,Imm_out_2,WA_2}; // 3*w + 6
+    Buffer #(M_W_SIZE) M_E_buffer(clk, rst, 1'b1,Memory_in,Memory_out);
+    assign { WB_signals_out_3, mux_lines[0], mux_lines[1], mux_lines[2], WA_3 } = Memory_out;
+
+    MUX #(W,N-1) WB_Mux(mux_lines,WB_signals_out_3[1:0],WD);
+
+    // |             WB              |
+    // |1-bit RegWrite | 2-bit WBsel |
+    // |  MEM | 0 00                 |
+    // |  ALU | 1 01                 |
+    // |  Imm | 1 10                 |
+    // |  xxx | 0 11                 |
 
     // TODO: add remaining stages
 
