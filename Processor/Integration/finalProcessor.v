@@ -1,41 +1,60 @@
 `include "../1.Fetch/Fetch.v"
 `include "../2.Decode/Decode.v"
 
-module Processor(clk, rst, regWrite, WD, WA, Rsrc, Rdst,Imm, MEM_signals, EX_signals, WB_signals,flush);
+module Processor(clk, rst, regWrite, WD, WA, Rsrc_out_2, Rdst_out_2,Imm_out_2,ALU_Out_2,MEM_signals_out_2, EX_signals_out_2, WB_signals_out_2,flags_out);
     
     localparam W = 16;
     localparam N = 3;
     localparam F_D_SIZE = W;
     localparam D_E_SIZE = 17+3*W;
-    // localparam E_M_SIZE = 17+3*W;
-    // localparam M_W_SIZE = 3+2*W;
+    localparam E_M_SIZE = 17+4*W;
+    localparam M_W_SIZE = 3+2*W;
 
     input clk, rst, regWrite; //regWrite coming from WB
     input [W-1:0] WD; //WD coming from WB
     input [2:0] WA; 
     
-    output [3:0] MEM_signals;   // memRead(1), memWrite(1), memAddress(1), memData(1)
-    output [5:0] EX_signals;    // ALUop(4+1enable), shamSelt(1)
-    output [2:0] WB_signals;    // regWrite(1), WBsel(2)
-    output [W-1:0]  Rsrc, Rdst; //
-    output wire flush;
-    output [15:0] Imm;
+
+   
+
+    output [2:0] flags_out;
+    output [3:0] MEM_signals_out_2;
+    output [5:0] EX_signals_out_2;
+    output [2:0] WB_signals_out_2;
+    output [15:0] ALU_Out_2, Rsrc_out_2, Rdst_out_2, Imm_out_2;
 //======================================================================================================================
 
+    wire [3:0] MEM_signals;   // memRead(1), memWrite(1), memAddress(1), memData(1)
+    wire [5:0] EX_signals;    // ALUop(4+1enable), shamSelt(1)
+    wire [2:0] WB_signals;    // regWrite(1), WBsel(2)
+    wire [W-1:0]  Rsrc, Rdst; //
+    wire flush;
+    wire [15:0] Imm;
+    wire [2:0]flags;
     wire [3:0] MEM_signals_in;
-    wire [5:0] EX_signals_in;
+    wire [5:0] EX_signals_in;   
     wire [2:0] WB_signals_in;
-
     wire [5:0] opcode_out;
     wire [2:0] src_out, dst_out;
-    wire [3:0] shiftamount_2;
+    wire [3:0] shiftamount_2,shiftamount_4;
     wire [15:0] Imm_in, Rsrc_in, Rdst_in, instr_in, instr_out;
-    wire [D_E_SIZE-1:0] Decode_in, Decode_out;
-
     wire [5:0] opcode;
     wire [N-1:0] src; 
     wire [N-1:0] dst;
     wire [3:0] shiftamount;
+    wire [3:0] shiftamount_3;
+    wire [15:0] ALU_Out;
+    wire [15:0] B;
+
+
+    wire [D_E_SIZE-1:0] Decode_in, Decode_out;
+    wire [E_M_SIZE-1:0] Execute_in,Execute_out;
+
+
+
+
+
+
 
     fetch FetchStage(clk, rst, opcode, src, dst, shiftamount);
 
@@ -45,11 +64,23 @@ module Processor(clk, rst, regWrite, WD, WA, Rsrc, Rdst,Imm, MEM_signals, EX_sig
     Buffer #(F_D_SIZE) F_D_buffer(clk, rst, 1'b1,instr_in,instr_out );
     assign {opcode_out, src_out, dst_out, shiftamount_2}= instr_out;
 
-    Decode DecodeStage(clk, rst, opcode,src_out, dst_out,shiftamount, regWrite, WD, WA, Rsrc_in, Rdst_in,  MEM_signals_in, EX_signals_in, WB_signals_in,flush);
+    Decode DecodeStage(clk, rst, opcode,src_out, dst_out,shiftamount_2, regWrite, WD, WA, Rsrc_in, Rdst_in,  MEM_signals_in, EX_signals_in, WB_signals_in,flush);
 
     assign Decode_in={MEM_signals_in, EX_signals_in, WB_signals_in, Rsrc_in, Rdst_in, shiftamount_2, Imm_in};
     Buffer #(D_E_SIZE) D_E_buffer(clk, rst, 1'b1,Decode_in ,Decode_out);
-    assign  {MEM_signals, EX_signals, WB_signals, Rsrc, Rdst, shiftamount,Imm} = Decode_out;
+    assign  {MEM_signals, EX_signals, WB_signals, Rsrc, Rdst, shiftamount_3,Imm} = Decode_out;
+
+    assign B = (EX_signals[0]==1'b0)? Rdst : { 12'b000000000000,shiftamount_3 };
+    ALU ALU_Stage(Rsrc,B,EX_signals[1],EX_signals[5:2], ALU_Out, flags[2],flags[1],flags[0] );
+    Register #(3) flags_inst(clk, rst, 1'b1,flags,flags_out );
+
+    assign Execute_in = {MEM_signals, EX_signals, WB_signals, Rsrc, Rdst, shiftamount_3,ALU_Out,Imm};
+    Buffer #(E_M_SIZE) E_M_buffer(clk, rst, 1'b1,Execute_in,Execute_out);
+    assign {MEM_signals_out_2, EX_signals_out_2, WB_signals_out_2, Rsrc_out_2, Rdst_out_2, shiftamount_4,ALU_Out_2,Imm_out_2}=Execute_out;
+
+
+
+    // TODO: add remaining stages
 
 endmodule
 

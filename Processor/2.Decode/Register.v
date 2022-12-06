@@ -10,7 +10,7 @@ module Register #(parameter W=16)(clk, rst, w_enable, D, Q);
         if (rst) Q = 0; 
         else if(w_enable) Q = D;
     end
-endmodule
+endmodule 
 
 module Buffer #(parameter W=16)(clk, rst, w_enable, D, Q);
     input clk;

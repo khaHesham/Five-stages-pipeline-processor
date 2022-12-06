@@ -1,10 +1,10 @@
 module Control_Unit (opcode,MEM_signals,EX_signals,WB_signals,flush);
 
-    localparam NOP =6'b000101 ;
-    localparam NOT =6'b000100 ;
-    localparam ADD =6'b000011 ;
-    localparam LDM =6'b000001 ;
-    localparam STD =6'b000010 ;
+    localparam NOP =6'b000001;
+    localparam NOT =6'b000100;
+    localparam ADD =6'b001011;
+    localparam LDM =6'b000001;
+    localparam STD =6'b000010;
 
     input [5:0] opcode;
     output reg flush;
@@ -38,9 +38,9 @@ module Control_Unit (opcode,MEM_signals,EX_signals,WB_signals,flush);
         case (opcode)
             NOP: begin 
                 flush=1'b0;
-                EX_signals=6'b000010;
+                EX_signals=6'b000000;
                 MEM_signals=4'b0000; 
-                WB_signals=3'b011;
+                WB_signals=3'b000;
 
             end
             NOT: begin 
@@ -58,14 +58,14 @@ module Control_Unit (opcode,MEM_signals,EX_signals,WB_signals,flush);
             end
             LDM: begin 
                 flush=1'b1;
-                EX_signals=6'bxxxx00;
+                EX_signals=6'b000000;
                 MEM_signals=4'b1000;
                 WB_signals=3'b110;
 
             end
             STD: begin
                 flush=1'b0;
-                EX_signals=6'bxxxx00;
+                EX_signals=6'b000000;
                 MEM_signals[3]=4'b0110;   
                 WB_signals=3'b0xx;
                 
