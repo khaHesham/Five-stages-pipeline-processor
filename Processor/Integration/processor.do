@@ -1,0 +1,2 @@
+vsim DecodeTB
+add wave *
