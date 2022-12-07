@@ -4,7 +4,7 @@
 `include "../4.Memory/Memo.v"
 `include "../5.WriteBack/WB.v"
 
-module Processor(clk, rst, regWrite, WD, WA_3, Rsrc_out_2, Rdst_out_2,Imm_out_3,ALU_Out_3,RD_out,MEM_signals_out_2, EX_signals_out_2, WB_signals_out_3,flags_out);
+module Processor(clk, rst, regWrite, WD, WA_3, Rsrc_out_2, Rdst_out_2,mux_lines[2],mux_lines[1],mux_lines[0],MEM_signals_out_2, EX_signals_out_2, WB_signals_out_3,flags_out);
     
     localparam W = 16;
     localparam N = 3;
@@ -22,9 +22,11 @@ module Processor(clk, rst, regWrite, WD, WA_3, Rsrc_out_2, Rdst_out_2,Imm_out_3,
     output [3:0] MEM_signals_out_2;
     output [5:0] EX_signals_out_2;
     output [2:0] WB_signals_out_3;
-    output [15:0] ALU_Out_3, Rsrc_out_2, Rdst_out_2, Imm_out_3;
-    output [15:0] RD_out;
+    output [15:0]  Rsrc_out_2, Rdst_out_2;
+    //output [15:0] ALU_Out_3,Imm_out_3,
+    // output [15:0] RD_out;
     output [2:0] WA_3;
+    output [W-1:0] mux_lines [3:0];
 //======================================================================================================================
 
     wire [3:0] MEM_signals;   // memRead(1), memWrite(1), memAddress(1), memData(1)
@@ -57,7 +59,7 @@ module Processor(clk, rst, regWrite, WD, WA_3, Rsrc_out_2, Rdst_out_2,Imm_out_3,
     wire [E_M_SIZE-1:0] Execute_in, Execute_out;
     wire [M_W_SIZE-1:0] Memory_in, Memory_out;
 
-    wire [W-1:0] mux_lines [3:0];
+
 
 
 
@@ -82,13 +84,13 @@ module Processor(clk, rst, regWrite, WD, WA_3, Rsrc_out_2, Rdst_out_2,Imm_out_3,
 
     assign Execute_in = {MEM_signals, WB_signals, Rsrc, Rdst,ALU_Out,Imm,WA_1};  // 4*16 + 10
     Buffer #(E_M_SIZE) E_M_buffer(clk, rst, 1'b1,Execute_in,Execute_out);
-    assign {MEM_signals_out_2, WB_signals_out_2, Rsrc_out_2, Rdst_out_2,ALU_Out_2,Imm_out_2,WA_2}=Execute_out;
+    assign {MEM_signals_out_2, WB_signals_out_2, Rsrc_out_2, Rdst_out_2,ALU_Out_2,Imm_out_2,WA_2}=Execute_out;  
 
     Memo memoryStage (clk,rst,Rsrc_out_2,Rdst_out_2,RD_in,MEM_signals_out_2[3],MEM_signals_out_2[2],MEM_signals_out_2[1],MEM_signals_out_2[0]);
 
     assign Memory_in = { WB_signals_out_2,RD_in,ALU_Out_2,Imm_out_2,WA_2}; // 3*w + 6
     Buffer #(M_W_SIZE) M_E_buffer(clk, rst, 1'b1,Memory_in,Memory_out);
-    assign { WB_signals_out_3, mux_lines[0], mux_lines[1], mux_lines[2], WA_3 } = Memory_out;
+    assign { WB_signals_out_3,mux_lines[0], mux_lines[1], mux_lines[2], WA_3 } = Memory_out;
 
     MUX #(W,N-1) WB_Mux(mux_lines,WB_signals_out_3[1:0],WD);
 

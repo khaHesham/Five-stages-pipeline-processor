@@ -69,8 +69,8 @@ module Control_Unit (opcode,MEM_signals,EX_signals,WB_signals,flush);
             STD: begin
                 flush=1'b0;
                 EX_signals=6'b000000;
-                MEM_signals=4'b0110;   
-                WB_signals=3'b0xx;
+                MEM_signals=4'b0110;   //memRead(1), memWrite(1), memAddress(1), memData(1)
+                WB_signals=3'b100;
                 
             end
                 default: begin //NOP

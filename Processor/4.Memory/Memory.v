@@ -14,16 +14,16 @@ module Memory #(parameter WORD_SIZE = 16, SIZE = 11)(clk, rst, memRead, memWrite
     reg [WORD_SIZE-1:0] RD;
 
     integer i;
-    assign RD = mem[addr];
-    always @(negedge clk) begin
-        if (rst) begin
-            for (i = 0; i < 2**SIZE; i = i + 1)
-                mem[i] = 0;
-        end 
+    // assign RD = mem[addr];
+    always @(*) begin
+        // if (rst) begin
+        //     for (i = 0; i < 2**SIZE; i = i + 1)
+        //         mem[i] = 0;
+        // end 
         // else if(memRead) RD = mem[addr];        
-        else if(memWrite)begin
+        if(memWrite)begin
             mem[addr] = WD;
-            // RD = mem[addr]; 
+            RD = mem[addr]; 
         end 
         
     end
