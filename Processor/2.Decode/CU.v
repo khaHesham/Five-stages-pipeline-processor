@@ -3,7 +3,7 @@ module Control_Unit (opcode,MEM_signals,EX_signals,WB_signals,flush);
     localparam NOP =6'b000001;
     localparam NOT =6'b000100;
     localparam ADD =6'b001011;
-    localparam LDM =6'b000001;
+    localparam LDM =6'b111111;
     localparam STD =6'b000010;
 
     input [5:0] opcode;
@@ -70,7 +70,7 @@ module Control_Unit (opcode,MEM_signals,EX_signals,WB_signals,flush);
                 flush=1'b0;
                 EX_signals=6'b000000;
                 MEM_signals=4'b0110;   //memRead(1), memWrite(1), memAddress(1), memData(1)
-                WB_signals=3'b100;
+                WB_signals=3'bxxx;
                 
             end
                 default: begin //NOP

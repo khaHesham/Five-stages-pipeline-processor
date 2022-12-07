@@ -19,7 +19,7 @@ module Decode(clk, rst, opcode,src,dst,shiftamount, regWrite, WD, WA, Rsrc, Rdst
     output [5:0] EX_signals;    // ALUop(4+1enable), shamSelt(1)
     output [2:0] WB_signals;    // regWrite(1), WBsel(2)
     output [W-1:0]  Rsrc, Rdst; //
-    output wire flush;
+    output flush;
     //output [15:0] Imm;
     
 

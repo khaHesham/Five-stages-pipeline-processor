@@ -22,7 +22,7 @@ module regFile #(parameter W=16 ) (clk, rst, regWrite, WD, WA, src, dst, Rsrc, R
     genvar i;
     generate
         for (i = 0; i < 2**N; i = i+1) begin
-            Register #(W) register(clk, rst, w_enable[i]&regWrite, WD, mux_lines[i]);
+            Buffer_neg #(W) register(clk, rst, w_enable[i]&regWrite, WD, mux_lines[i]);
         end
     endgenerate
 

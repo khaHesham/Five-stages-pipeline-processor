@@ -4,7 +4,9 @@
 `include "../4.Memory/Memo.v"
 `include "../5.WriteBack/WB.v"
 
-module Processor(clk, rst, regWrite, WD, WA_3, Rsrc_out_2, Rdst_out_2,mux_lines[2],mux_lines[1],mux_lines[0],MEM_signals_out_2, EX_signals_out_2, WB_signals_out_3,flags_out);
+module Processor(clk, rst, WB_signals_out_3[2], WD, WA_3, Rsrc_out_2,
+ Rdst_out_2,mux_lines[2],mux_lines[1],mux_lines[0],MEM_signals_out_2, EX_signals,
+  WB_signals_out_3,flags_out,pc,instr_out, flush);
     
     localparam W = 16;
     localparam N = 3;
@@ -14,26 +16,29 @@ module Processor(clk, rst, regWrite, WD, WA_3, Rsrc_out_2, Rdst_out_2,mux_lines[
     localparam M_W_SIZE = 3*W + 6;
     localparam SIZE = 11;
 
-    input clk, rst, regWrite; //regWrite coming from WB
-    input [W-1:0] WD; //WD coming from WB 
+    input clk, rst; //regWrite coming from WB
+    output [W-1:0] WD; //WD coming from WB 
   
 
     output [2:0] flags_out;
     output [3:0] MEM_signals_out_2;
-    output [5:0] EX_signals_out_2;
+    output [5:0] EX_signals;
     output [2:0] WB_signals_out_3;
     output [15:0]  Rsrc_out_2, Rdst_out_2;
     //output [15:0] ALU_Out_3,Imm_out_3,
     // output [15:0] RD_out;
     output [2:0] WA_3;
     output [W-1:0] mux_lines [3:0];
+    output [15:0] instr_out;
+    //output [15:0] Imm_in;
+    output [31:0] pc;
 //======================================================================================================================
 
     wire [3:0] MEM_signals;   // memRead(1), memWrite(1), memAddress(1), memData(1)
-    wire [5:0] EX_signals;    // ALUop(4+1enable), shamSelt(1)
+    // wire [5:0] EX_signals;    // ALUop(4+1enable), shamSelt(1)
     wire [2:0] WB_signals;    // regWrite(1), WBsel(2)
     wire [W-1:0]  Rsrc, Rdst; //
-    wire flush;
+    output flush;
     wire [15:0] Imm;
     wire [2:0]flags;
     wire [3:0] MEM_signals_in;
@@ -42,7 +47,9 @@ module Processor(clk, rst, regWrite, WD, WA_3, Rsrc_out_2, Rdst_out_2,mux_lines[
     wire [5:0] opcode_out;
     wire [2:0] src_out, dst_out;
     wire [3:0] shiftamount_2,shiftamount_4;
-    wire [15:0] Imm_in, Rsrc_in, Rdst_in, instr_in, instr_out, Imm_out_2;
+    wire [15:0] Rsrc_in, Rdst_in, instr_in, Imm_out_2;
+    wire [15:0] Imm_in;
+
     wire [5:0] opcode;
     wire [N-1:0] src; 
     wire [N-1:0] dst;
@@ -53,6 +60,7 @@ module Processor(clk, rst, regWrite, WD, WA_3, Rsrc_out_2, Rdst_out_2,mux_lines[
     wire [15:0] RD_in;
     wire [2:0] WA_1, WA_2, WA_3;
     wire [2:0] WA; 
+    wire [15:0] instr_temp;
 
 
     wire [D_E_SIZE-1:0] Decode_in, Decode_out;
@@ -64,15 +72,18 @@ module Processor(clk, rst, regWrite, WD, WA_3, Rsrc_out_2, Rdst_out_2,mux_lines[
 
 
 
-    fetch FetchStage(clk, rst, opcode, src, dst, shiftamount);
+    fetch FetchStage(clk, rst, opcode, src, dst, shiftamount,pc);
 
     assign Imm_in = {opcode, src, dst, shiftamount};
-    assign instr_in=(flush == 1'b1)? 16'b000101_000_011_0000 : {opcode, src, dst, shiftamount};
+    //assign instr_in = {opcode, src, dst, shiftamount};
+    assign instr_in=(flush == 1'b1)? 16'b0000010000110000 : {opcode, src, dst, shiftamount};
 
     Buffer #(F_D_SIZE) F_D_buffer(clk, rst, 1'b1,instr_in,instr_out );
+    
+
     assign {opcode_out, src_out, dst_out, shiftamount_2}= instr_out;
 
-    Decode DecodeStage(clk, rst, opcode,src_out, dst_out,shiftamount_2, regWrite, WD, WA_3, Rsrc_in, Rdst_in,  MEM_signals_in, EX_signals_in, WB_signals_in,flush);
+    Decode DecodeStage(clk, rst, opcode_out,src_out, dst_out,shiftamount_2, WB_signals_out_3[2], WD, WA_3, Rsrc_in, Rdst_in,  MEM_signals_in, EX_signals_in, WB_signals_in,flush);
 
     assign Decode_in={MEM_signals_in, EX_signals_in, WB_signals_in, Rsrc_in, Rdst_in, shiftamount_2, Imm_in,dst_out}; //16*3 +20
     Buffer #(D_E_SIZE) D_E_buffer(clk, rst, 1'b1,Decode_in ,Decode_out);
@@ -89,8 +100,8 @@ module Processor(clk, rst, regWrite, WD, WA_3, Rsrc_out_2, Rdst_out_2,mux_lines[
     Memo memoryStage (clk,rst,Rsrc_out_2,Rdst_out_2,RD_in,MEM_signals_out_2[3],MEM_signals_out_2[2],MEM_signals_out_2[1],MEM_signals_out_2[0]);
 
     assign Memory_in = { WB_signals_out_2,RD_in,ALU_Out_2,Imm_out_2,WA_2}; // 3*w + 6
-    Buffer #(M_W_SIZE) M_E_buffer(clk, rst, 1'b1,Memory_in,Memory_out);
-    assign { WB_signals_out_3,mux_lines[0], mux_lines[1], mux_lines[2], WA_3 } = Memory_out;
+    // Buffer #(M_W_SIZE) M_E_buffer(clk, rst, 1'b1,Memory_in,Memory_out);
+    assign { WB_signals_out_3,mux_lines[0], mux_lines[1], mux_lines[2], WA_3 } = Memory_in;
 
     MUX #(W,N-1) WB_Mux(mux_lines,WB_signals_out_3[1:0],WD);
 

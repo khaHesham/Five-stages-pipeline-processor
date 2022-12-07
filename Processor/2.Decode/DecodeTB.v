@@ -3,7 +3,7 @@ module Decode_TB;
 
 //Inputs
  reg clk,rst;
- reg [15:0] WD;
+ wire [15:0] WD;
  wire flush;
  wire [15:0] Rsrc_out_2,Rdst_out_2,ALU_Out_3;  
  wire [2:0] WA_3;
@@ -12,13 +12,15 @@ module Decode_TB;
  wire [3:0] MEM_signals_out_2; // memRead(1), memWrite(1), memAddress(1), memData(1)
  wire [5:0] EX_signals_out_2;  // ALUop(4+1enable), shamSelt(1)
  wire [2:0] WB_signals_out_3;  // regWrite(1), WBsel(2)
- reg regWrite;
+ wire regWrite;
  wire [15:0] RD_out;
 
  wire [2:0] flags_out;
+ wire [31:0] pc;
+ wire [15:0] instr_in;
 
 //Outputs
- Processor processor_inst(clk, rst, regWrite, WD, WA_3, Rsrc_out_2, Rdst_out_2,Imm_out_3,ALU_Out_3,RD_out,MEM_signals_out_2, EX_signals_out_2, WB_signals_out_3,flags_out);
+ Processor processor_inst(clk, rst, regWrite, WD, WA_3, Rsrc_out_2, Rdst_out_2,Imm_out_3,ALU_Out_3,RD_out,MEM_signals_out_2, EX_signals_out_2, WB_signals_out_3,flags_out,pc,instr_in, flush);
    always#50 clk = ~clk;
     initial begin
     clk=1;

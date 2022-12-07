@@ -4,9 +4,9 @@ module fetch(
     output [5:0] opcode,
     output [2:0] src,
     output [2:0] dst,
-    output [3:0] shiftamount
+    output [3:0] shiftamount,
+    output [31:0] pc
 );
-  wire [31:0] pc;
   reg [15:0] memoinst[2*10^6-1:0];
 //   reg [5:0] opcodetemp;
 //   reg [2:0] srctemp;
