@@ -26,7 +26,7 @@ module Buffer #(parameter W=16)(clk, rst, w_enable, D, Q);
     end
 endmodule
 
-module Buffer_neg #(parameter W=16)(clk, rst, w_enable, D, Q);
+module Register_neg #(parameter W=16)(clk, rst, w_enable, D, Q);
     input clk;
     input rst;
     input w_enable;
@@ -38,4 +38,4 @@ module Buffer_neg #(parameter W=16)(clk, rst, w_enable, D, Q);
         if (rst) Q = 0; 
         else if(w_enable) Q = D;
     end
-endmodule
+endmodule 

@@ -9,7 +9,7 @@ module Control_Unit (opcode,MEM_signals,EX_signals,WB_signals,flush);
     input [5:0] opcode;
     output reg flush;
     output reg [3:0] MEM_signals; //memRead(1), memWrite(1), memAddress(1), memData(1)
-    output reg [5:0] EX_signals;  //ALUop(4+1enable), shamSelt(1)
+    output reg [6:0] EX_signals;  //ALUop(4+1enable), shamSelt(1), flag_en
     output reg [2:0] WB_signals;  //regWrite(1), WBsel(2)
 
     /*
@@ -41,41 +41,41 @@ module Control_Unit (opcode,MEM_signals,EX_signals,WB_signals,flush);
         case (opcode)
             NOP: begin 
                 flush=1'b0;
-                EX_signals=6'b000000;
+                EX_signals=6'b0000000;
                 MEM_signals=4'b0000; 
                 WB_signals=3'b000;
 
             end
             NOT: begin 
                 flush=1'b0;
-                EX_signals=6'b000110;
+                EX_signals=6'b0001101;
                 MEM_signals=4'b0000;
                 WB_signals=3'b101;
                
             end
             ADD: begin 
                 flush=1'b0;
-                EX_signals=6'b001010;
+                EX_signals=6'b0010101;
                 MEM_signals=4'b0000;
                 WB_signals=3'b101;
             end
             LDM: begin 
                 flush=1'b1;
-                EX_signals=6'b000000;
+                EX_signals=6'b0000000;
                 MEM_signals=4'b1000;
                 WB_signals=3'b110;
 
             end
             STD: begin
                 flush=1'b0;
-                EX_signals=6'b000000;
+                EX_signals=6'b0000000;
                 MEM_signals=4'b0110;   //memRead(1), memWrite(1), memAddress(1), memData(1)
                 WB_signals=3'bxxx;
                 
             end
                 default: begin //NOP
                 flush=1'b0;
-                EX_signals=6'b000010;
+                EX_signals=6'b0000100;
                 MEM_signals=4'b0000; 
                 WB_signals=3'b011;
             end

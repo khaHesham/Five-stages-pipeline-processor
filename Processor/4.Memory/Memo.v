@@ -1,4 +1,4 @@
-module Memo (clk,rst,Rsrc,Rdst,RD,memRead,memWrite,memAddress,memData);
+module Memo (clk, rst, Rsrc, Rdst, RD, memRead, memWrite, memAddress, memData);
     // |memRead,memWrite,memAddress,memData| => signals coming from CU.
 
     localparam W = 16;
