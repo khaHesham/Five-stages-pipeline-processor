@@ -1,0 +1,2 @@
+vsim TB
+add wave *
