@@ -1,11 +1,18 @@
 # all numbers in hex format
 
 #you should ignore empty lines
+#khaled hesham
+#
+#
+#
+#svmksmkv
 
-SHL R1, 4;
 
-#LDD R1,R3;
-#LDM R1,5; 
-#STD R1,R5; 
-#ADD R3,R2; 
-#NOT R1; 
+NOP;  #you should ignore empty lines
+NOP;
+ADD R1,R2;  #you should ignore empty lines
+NOT R2;
+NOT R3;
+
+NOT R4;  #you should ignore empty lines
+MOV R0,R7
