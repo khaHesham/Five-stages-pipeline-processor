@@ -1,0 +1,11 @@
+# all numbers in hex format
+
+#you should ignore empty lines
+
+SHL R1, 4;
+
+#LDD R1,R3;
+#LDM R1,5; 
+#STD R1,R5; 
+#ADD R3,R2; 
+#NOT R1; 
