@@ -2,14 +2,14 @@ import re
 
 #read file and store in dectionary
 dictionary = {}
-with open("Dectionary.txt") as f:
+with open("Assembler/Dectionary.txt") as f:
     for line in f:
         (key, val) = line.split()
         dictionary[str(key)] = val
 
 #read code
 instructions = []
-with open("code.txt") as f:
+with open("Assembler/code.txt") as f:
     for line in f:
         line = line.upper()
         # ignore comments and empty lines
@@ -94,6 +94,6 @@ for i,instruction in enumerate(instructions):
  
 
 #writing IR codes in output file
-outputFile = open("../Processor/1.Fetch/memory.txt","w")
+outputFile = open("Processor/1.Fetch/memory.txt","w")
 outputFile.writelines(IRCodes)
 outputFile.close()
