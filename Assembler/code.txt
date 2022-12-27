@@ -1,11 +1,7 @@
 # all numbers in hex format
 
 
-NOP;       #you should ignore empty lines
-NOP;
-ADD R1,R2 ;  #you should ignore empty lines
-NOT R2;
-NOT R3;
 
-NOT R4;  #you should ignore empty lines
-MOV R0,R7
+
+SHL R1,5;
+
