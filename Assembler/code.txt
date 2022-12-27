@@ -1,0 +1,7 @@
+# all numbers in hex format
+
+
+
+
+SHL R1,5;
+

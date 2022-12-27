@@ -3,6 +3,7 @@ module tb_alu;
  reg[15:0] A,B;
  reg ALU_EN,clk,reset; // ALU ensble and clk and reset
  reg[3:0] Function_Control;
+ reg [3:0] shiftamount;
 
 //Outputs
  wire[15:0] ALU_Out;
