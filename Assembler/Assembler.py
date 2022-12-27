@@ -77,15 +77,19 @@ for i,instruction in enumerate(instructions):
         src = Operands.split(',')[0]
         dst = Operands.split(',')[1]
 
-        #check if SHL & SHR & LDM 
-        if(inst == "SHL" or inst == "SHR" or inst == "LDM"):
+        #check for special cases 
+        if(inst == "LDM"):   
             IR = IR[0:6] + "000" + dictionary[src] + "0000"
             IRCodes.append( IR + "\n")
             addressCounter = addressCounter + 1
             IRCodes.append( bin(int(dst, 16))[2:].zfill(16) + "\n")  # get immediate value
             addressCounter = addressCounter + 1
             continue
-
+        elif(inst == "SHL" or inst == "SHR"):
+            shiftamount = bin(int(dst))[2:].zfill(4)
+            IR = IR[0:6]  + dictionary[src] + "000" + shiftamount
+            IRCodes.append( IR + "\n")
+            addressCounter = addressCounter + 1
         else:
             IR = IR[0:6] + dictionary[src] + dictionary[dst]+ '0000'
             IRCodes.append( IR +"\n")
