@@ -1,19 +1,22 @@
-module Memo (clk, rst, Rsrc, Rdst, RD, memRead, memWrite, memAddress, memData);
-    // |memRead,memWrite,memAddress,memData| => signals coming from CU.
+module Memo (clk, rst, MEM_READ, MEM_WRITE, MEM_ADDR_SEL, MEM_DATA_SEL, Rsrc, Rdst, ALU, sp, pc, pc_plus, flags, RD);
 
     localparam W = 16;
 
-    input clk,rst;
-    input memRead,memWrite,memData,memAddress;
-    input [W-1:0] Rsrc,Rdst;        //*all input data is here
+    input clk, rst;
+
+    input MEM_READ, MEM_WRITE;
+    input [1:0] MEM_ADDR_SEL;
+    input [2:0] MEM_DATA_SEL, flags;
+    input [W-1:0] Rsrc, Rdst, ALU, sp;
+    input [2*W-1:0] pc, pc_plus;
 
     output [W-1:0] RD;
 
-    wire [10:0] addr;
+    wire [W-1:0] WA, WD;
 
-    assign addr =(memAddress == 1'b1)? Rdst[10:0] : Rsrc[10:0];
+    MUX #(W, 2) addr_mux ('{sp, ALU, Rdst, Rsrc}, MEM_ADDR_SEL, WA);
+    MUX #(W, 3) data_mux ('{16'b0, pc_plus[15:0], pc_plus[31:16], pc[15:0], pc[31:16], {13'b0, flags}, Rdst, Rsrc}, MEM_DATA_SEL, WD);
 
-    Memory memo(clk, rst, memRead, memWrite, addr, Rsrc, RD);
+    Memory memo(clk, rst, MEM_READ, MEM_WRITE, WA[10:0], WD, RD);
 
- 
 endmodule

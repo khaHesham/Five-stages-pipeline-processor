@@ -28,7 +28,7 @@ module fetch #(parameter W=16, SIZE=20)(clk, rst, Rdst_D, Rdst_E, WD, BRANCH, FL
 
     Register #(2*W) pc_pop (clk, rst, POP_L_H[1], pop_in, ret_address);
 
-    MUX #(2*W, 3) pc_mux ('{32'b0, 32'b0, 32'b0, Rdst_E, ret_address, ISR, Rdst_D, pc+1}, pc_select, pc_in);
+    MUX #(2*W, 3) pc_mux ('{32'b0, 32'b0, 32'b0, {16'b0, Rdst_E}, ret_address, ISR, {16'b0, Rdst_D}, pc_1}, pc_select, pc_in);
 
     Register #(2*W, START_ADDRESS) pc_inst(clk, rst, PC_ENB, pc_in, pc);
 
