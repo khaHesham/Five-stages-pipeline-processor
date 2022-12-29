@@ -1,10 +1,10 @@
 `include "../1.Fetch/Fetch.v"
 `include "../2.Decode/Decode.v"
-`include "../3.Execute/Execute.v"
+`include "../3.Execute/ExecuteStage.v"
 `include "../4.Memory/Memo.v"
 `include "../5.WriteBack/WB.v"
 
-module Processor(clk, rst, interrupt, in_port, out_port, pc, imm, EX_signals, MEM_signals, WB_signals, ALU_out, flags_out, WD);
+module Processor(clk, rst, interrupt, in_port, out_port, pc, imm, EX_signals, MEM_signals, WB_signals, ALU_out, flags, WD);
     
 //====================================================CONSTANTS=======================================================
     localparam W = 16;
@@ -29,7 +29,7 @@ module Processor(clk, rst, interrupt, in_port, out_port, pc, imm, EX_signals, ME
     output [WB_SIGS_SIZE-1:0] WB_signals;
     output [EX_SIGS_SIZE-1:0] EX_signals;
     output [W-1:0] imm, WD, ALU_out, out_port;
-    output [2:0] flags_out;
+    output [2:0] flags;
 //=======================================================WIRES========================================================
     //signals
     wire ALU_EN, FLAGS_EN, CALL, MEM_READ, MEM_WRITE, WB_SEL, REG_WRITE, SP_WRITE, FLAGS_WRITE;
@@ -53,9 +53,8 @@ module Processor(clk, rst, interrupt, in_port, out_port, pc, imm, EX_signals, ME
     wire [W-1:0] sp, sp_1, sp_2;
     wire [2*W-1:0] pc, pc_1, pc_2, pc_3, pc_plus, pc_plus_1, pc_plus_2, pc_plus_3;
 
-    wire [W-1:0] B;
     wire [W-1:0] ALU_out, ALU_out_1, ALU_out_2;
-    wire [2:0] flags, flags_1, flags_out;
+    wire [2:0] flags, flags_1;
 
     wire [W-1:0] mux_lines [3:0];
     wire [W-1:0] RD, RD_1, WD;
@@ -65,6 +64,10 @@ module Processor(clk, rst, interrupt, in_port, out_port, pc, imm, EX_signals, ME
     wire [D_E_SIZE-1:0] Decode_in, Decode_out;
     wire [E_M_SIZE-1:0] Execute_in, Execute_out;
     wire [M_W_SIZE-1:0] Memory_in, Memory_out;
+
+    wire [1:0] FU_Src_Sel;
+    wire [1:0] FU_Dst_Sel;
+
 
     //TODO PC_ENB, F_D_ENB, memory stage
 
@@ -88,10 +91,10 @@ module Processor(clk, rst, interrupt, in_port, out_port, pc, imm, EX_signals, ME
     
     assign {BRANCH_TYPE, CALL, RSRC_SEL, RDST_SEL, ALU_OP, FLAGS_EN, ALU_EN} = EX_signals_1;
 
-    // assign B = (SHAMT_SEL==1'b0)? Rdst_1 : {12'b000000000000, shamt_2};
+    // TODO: dont forget to update FU_Src_Sel , FU_Dst_Sel
+    ExecuteStage letsCompute (clk,rst,EX_signals_1,FU_Src_Sel,FU_Dst_Sel,FLAGS_WRITE,Rsrc_1,Rdst_1,shamt_1,imm_1,sp_1,in_port_2,ALU_out_1,WD,ALU_out,flags);
 
-    // Register_neg #(3) flags_inst(clk, rst, FLAGS_EN, flags, flags_out);
-    // ALU ALU_Stage(Rsrc_1, B, ALU_EN, ALU_OP, ALU_out, flags[2], flags[1], flags[0]);
+    Branch jmp_Handler(BRANCH_TYPE,flags,BRANCH);
 
     assign Execute_in = {MEM_signals_1, WB_signals_1, Rsrc_1, Rdst_1, dst_1, ALU_out, flags, sp_1, pc_2, pc_plus_2};
 //======================================================================================================================

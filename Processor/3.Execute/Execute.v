@@ -1,8 +1,8 @@
 module ALU(
            input [15:0] A,B,                        // ALU 16-bit Inputs                 
            input ALU_EN,                            // ALU Enable
-           input [3:0] Function_Control,            //ALU_OP
-           input [3:0] shiftamount,                 //shift amount
+           input [3:0] Function_Control,            // ALU_OP
+           input [3:0] shiftamount,                 // shift amount
            output [15:0] ALU_Out,                   // ALU 16-bit Output
            output CarryOut,NegativeFlag,ZeroFlag    // Carry Out Flag ,NegativeFlag,ZeroFlag
     );

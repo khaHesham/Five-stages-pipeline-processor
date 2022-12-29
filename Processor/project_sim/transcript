@@ -1,0 +1,77 @@
+# Compile of CU.v failed with 1 errors.
+# Compile of CU.v failed with 3 errors.
+# Compile of CU.v was successful.
+vsim -gui work.Control_Unit
+# vsim -gui work.Control_Unit 
+# Start time: 19:38:29 on Dec 29,2022
+# Loading work.Control_Unit
+force -freeze sim:/Control_Unit/opcode 110011 0
+force -freeze sim:/Control_Unit/opcode 110011 0
+force -freeze sim:/Control_Unit/interrupt 0 0
+force -freeze sim:/Control_Unit/inst_before_call 0 0
+force -freeze sim:/Control_Unit/inter_state_before 00 0
+force -freeze sim:/Control_Unit/ret_state_before 000 0
+force -freeze sim:/Control_Unit/reti_state_before 000 0
+run
+add wave -position insertpoint  \
+sim:/Control_Unit/NOP \
+sim:/Control_Unit/SETC \
+sim:/Control_Unit/CLRC \
+sim:/Control_Unit/NOT \
+sim:/Control_Unit/INC \
+sim:/Control_Unit/DEC \
+sim:/Control_Unit/PUSH \
+sim:/Control_Unit/POP \
+sim:/Control_Unit/ADD \
+sim:/Control_Unit/SUB \
+sim:/Control_Unit/AND \
+sim:/Control_Unit/OR \
+sim:/Control_Unit/MOV \
+sim:/Control_Unit/SHL \
+sim:/Control_Unit/SHR \
+sim:/Control_Unit/LDM \
+sim:/Control_Unit/LDD \
+sim:/Control_Unit/STD \
+sim:/Control_Unit/JZ \
+sim:/Control_Unit/JN \
+sim:/Control_Unit/JC \
+sim:/Control_Unit/JMP \
+sim:/Control_Unit/OUT \
+sim:/Control_Unit/IN \
+sim:/Control_Unit/CALL \
+sim:/Control_Unit/RET \
+sim:/Control_Unit/RETI \
+sim:/Control_Unit/NO_INTERRUPT \
+sim:/Control_Unit/PUSH_FLAGS \
+sim:/Control_Unit/PUSH_1 \
+sim:/Control_Unit/NO_RET \
+sim:/Control_Unit/POP_1_RET \
+sim:/Control_Unit/POP_2_RET \
+sim:/Control_Unit/NOP1_RET \
+sim:/Control_Unit/NOP2_RET \
+sim:/Control_Unit/NO_RETI \
+sim:/Control_Unit/POP_FLAGS \
+sim:/Control_Unit/POP_1_RETI \
+sim:/Control_Unit/POP_2_RETI \
+sim:/Control_Unit/NOP1_RETI \
+sim:/Control_Unit/NOP2_RETI \
+sim:/Control_Unit/opcode \
+sim:/Control_Unit/interrupt \
+sim:/Control_Unit/inst_before_call \
+sim:/Control_Unit/inter_state_before \
+sim:/Control_Unit/ret_state_before \
+sim:/Control_Unit/reti_state_before \
+sim:/Control_Unit/f_d_buffer_enable \
+sim:/Control_Unit/pc_enable \
+sim:/Control_Unit/flush \
+sim:/Control_Unit/jump_sel \
+sim:/Control_Unit/MEM_signals \
+sim:/Control_Unit/EX_signals \
+sim:/Control_Unit/WB_signals \
+sim:/Control_Unit/inter_state_after \
+sim:/Control_Unit/ret_state_after \
+sim:/Control_Unit/reti_state_after
+run
+quit -sim
+# End time: 19:47:41 on Dec 29,2022, Elapsed time: 0:09:12
+# Errors: 0, Warnings: 5
