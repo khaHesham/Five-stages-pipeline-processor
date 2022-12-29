@@ -72,16 +72,18 @@ module Processor(clk, rst, interrupt, in_port, out_port, pc, imm, EX_signals, ME
     //TODO PC_ENB, F_D_ENB, memory stage
 
 //=======================================================FETCH STAGE====================================================
-    fetch FetchStage(clk, rst, Rdst, Rdst_1, WD, BRANCH, FLUSH, PC_ENB, POP_L_H, JUMP_SEL, instr, imm, pc, pc_plus);
+    fetch FetchStage(clk, rst, Rdst, Rdst_1, WD, BRANCH, FLUSH, PC_ENB && PC_ENB_CU , POP_L_H, JUMP_SEL, instr, imm, pc, pc_plus);
 
     assign Fetch_in = {interrupt, instr, pc, pc_plus, in_port};
 //======================================================================================================================
-    Buffer #(F_D_SIZE) F_D_buffer(clk, rst, F_D_ENB, Fetch_in, Fetch_out);
+    Buffer #(F_D_SIZE) F_D_buffer(clk, rst, F_D_ENB_CU && F_D_ENB, Fetch_in, Fetch_out);
 //=======================================================DECODE STAGE===================================================
     assign {interrupt_1, opcode, src, dst, shamt, pc_1, pc_plus_1, in_port_1} = Fetch_out;
 
-    // Decode DecodeStage(clk, rst, opcode_1, src_1, dst_1, shamt_1, REG_WRITE, WD, WA, Rsrc,
-    //  Rdst, MEM_signals, EX_signals, WB_signals, FLUSH);
+    HDU hdu_inst(src, dst, dst_1, MEM_READ, F_D_ENB, PC_ENB, FLUSH_LOAD_USE);
+
+    Decode DecodeStage (clk, rst, opcode, interrupt_1, CALL, src, dst, REG_WRITE, WD, WA, Rsrc, Rdst, MEM_signals, EX_signals, WB_signals,
+        FLUSH, BRANCH, "detection_signal", sp, ALU_out_2, SP_WRITE, F_D_ENB_CU, PC_ENB_CU, JUMP_SEL);
 
     assign Decode_in = {MEM_signals, EX_signals, WB_signals, Rsrc, Rdst, src, dst, shamt, imm, sp, in_port_1, pc_1, pc_plus_1};
 //======================================================================================================================
