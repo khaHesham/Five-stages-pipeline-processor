@@ -37,6 +37,7 @@ IRCodes = []
 addressCounter = 0
 interruptAddress = 0
 startAddress = 0
+isAddress = False
 
 
 for i,instruction in enumerate(instructions):
@@ -50,7 +51,6 @@ for i,instruction in enumerate(instructions):
         addressCounter = int(instruction.split(' ')[1],16)
         i = i+1
         continue
-
 
     #handling instructions
     inst = instructions[i].split(' ')[0]
@@ -75,7 +75,7 @@ for i,instruction in enumerate(instructions):
         else:
             IR = IR[0:6] + "000" + dictionary[Operands] + "0000" 
     
-        IRCodes.append(hex(addressCounter).upper()[2:] + ": " +  IR + "\n")
+        IRCodes.append( IR + "\n")
         addressCounter = addressCounter + 1
         continue
 
@@ -87,19 +87,19 @@ for i,instruction in enumerate(instructions):
         #check for special cases 
         if(inst == "LDM"):   
             IR = IR[0:6] + "000" + dictionary[src] + "0000"
-            IRCodes.append(hex(addressCounter).upper()[2:] + ": " +  IR + "\n")
+            IRCodes.append( IR + "\n")
             addressCounter = addressCounter + 1
-            IRCodes.append(hex(addressCounter).upper()[2:] + ": " +  bin(int(dst, 16))[2:].zfill(16) + "\n")  # get immediate value
+            IRCodes.append( bin(int(dst, 16))[2:].zfill(16) + "\n")  # get immediate value
             addressCounter = addressCounter + 1
             continue
         elif(inst == "SHL" or inst == "SHR"):
             shiftamount = bin(int(dst))[2:].zfill(4)
             IR = IR[0:6]  + dictionary[src] + "000" + shiftamount
-            IRCodes.append(hex(addressCounter).upper()[2:] + ": " +  IR + "\n")
+            IRCodes.append( IR + "\n")
             addressCounter = addressCounter + 1
         else:
             IR = IR[0:6] + dictionary[src] + dictionary[dst]+ '0000'
-            IRCodes.append(hex(addressCounter).upper()[2:] + ": " +  IR +"\n")
+            IRCodes.append( IR +"\n")
             addressCounter = addressCounter + 1
             continue
  
