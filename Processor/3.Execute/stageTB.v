@@ -16,7 +16,7 @@ module stageTB;
 
 
   wire [15:0] ALU_Result;
-  wire [15:0] flags_out;
+  wire [2:0] flags_out;
 
   ExecuteStage letsCompute (clk,rst,EX,FU_Src_Sel,FU_Dst_Sel,flags_wb,Rsrc,Rdst,shiftamount,Immediate,SP_Low,IN_PORT,ALU_After_E_M,WB,ALU_Result,flags_out);
     always#50 clk = ~clk;
@@ -26,10 +26,11 @@ module stageTB;
     clk=1;
 
     #100;
-     rst=0;
-    EX=14'b0000_0010_000011;
-    Rsrc = 10;
-    Rdst = 20; 
+    flags_wb=0;
+    rst=0;
+    EX=14'b0000_0001_000001;
+    Rsrc = 20;
+    Rdst = 0; 
     FU_Dst_Sel=0;
     FU_Src_Sel=0;
     

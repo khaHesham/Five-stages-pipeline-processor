@@ -47,7 +47,7 @@ input [W-1:0] WB;
 // {* ========================  DATA OUT  ======================= *}
 
 output [W-1:0] ALU_Result;
-output [W-1:0] flags_out;
+output [2:0] flags_out;
 
 
 // {* ======================= Registers & Wires ======================= *} 
@@ -72,7 +72,6 @@ always @(*) begin
             begin
                 M1_output = IN_PORT;
             end
-        
         Imm_M1:
             begin
                 M1_output = Immediate;
@@ -88,12 +87,10 @@ always @(*) begin
             begin
                 M2_output = Rdst; 
             end
-
         shamt_M2:
             begin
                 M2_output = {12'b000000000000,shiftamount};
             end   
-
         sp_M2:
             begin
                 M2_output = SP_Low;
@@ -109,12 +106,10 @@ always @(*) begin
             begin
                 A = M1_output; 
             end
-
         wb:
             begin
                 A = WB;
             end   
-
         ALU_out_after_E_M:
             begin
                 A = ALU_After_E_M;
@@ -130,12 +125,10 @@ always @(*) begin
             begin
                 B = M2_output; 
             end
-
         wb:
             begin
                 B = WB;
             end   
-
         ALU_out_after_E_M:
             begin
                 B = ALU_After_E_M;
@@ -152,9 +145,9 @@ ALU ourALU(A,B,EX[0],EX[9:6],shiftamount,ALU_Result,Flags[2],Flags[1],Flags[0]);
 
 assign f_in=(flags_wb)? WB[3:0] : Flags;
 
-Register_neg #(3) flags_inst(clk, rst, EX[1] | flags_wb, f_in, f_out);
+Register_neg #(3) flags_inst(clk, rst, EX[1] || flags_wb, f_in, f_out);
 
-assign flags_out = {13'b0000000000000,f_out};
+assign flags_out = f_out;
 
 
 

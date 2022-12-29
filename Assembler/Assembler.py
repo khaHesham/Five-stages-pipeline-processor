@@ -48,8 +48,14 @@ for i,instruction in enumerate(instructions):
     #handling org
     pattern = '^.ORG*'
     if(re.search(pattern,instruction)):
-        addressCounter = int(instruction.split(' ')[1],16)
-        i = i+1
+        skipAmount = int(instruction.split(' ')[1],16)
+        if  skipAmount > addressCounter:
+            for i in range(addressCounter,skipAmount + 1):
+                IRCodes.append(" \n")
+            addressCounter = skipAmount
+        else:
+            addressCounter = skipAmount
+
         continue
 
     #handling instructions
