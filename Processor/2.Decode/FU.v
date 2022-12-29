@@ -1,9 +1,9 @@
 module forwarding_EXE (src_address,dest_address_current,
-                        dest_address_EXE,dest_address_WB,WB_MEM, 
+                        dest_MEM,dest_WB,WB_MEM, 
                         WB_WB,MEM_SP_W,WB_SP_W, sel_src, sel_dst);
   
   
-  input [2:0] src_address, dest_address_current,dest_address_EXE,dest_address_WB;
+  input [2:0] src_address, dest_address_current,dest_MEM,dest_WB;
   input WB_MEM, WB_WB, MEM_SP_W, WB_SP_W;
   output reg [1:0] sel_src, sel_dst;
 

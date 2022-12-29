@@ -2,7 +2,7 @@ module Decode(
      clk, rst,
      opcode,interrupt,inst_before_call,src,dst,
      regWrite, WD, WA, Rsrc, Rdst, MEM_signals, EX_signals, 
-     WB_signals,flush,branch_signal,detection_signal,sp,sp_value,sp_write_enable);
+     WB_signals,flush,branch_signal,detection_signal,sp,sp_value,sp_write_enable, f_d_buffer_enable, pc_enable, jump_sel);
     
     localparam W = 16;
     localparam N = 3;
@@ -23,6 +23,9 @@ module Decode(
     output [W-1:0]  Rsrc, Rdst;
     output [15:0]sp; 
     output flush;
+
+    output f_d_buffer_enable, pc_enable;
+    output [1:0] jump_sel;
 
    wire inter_state_before; 
    wire ret_state_before; 
