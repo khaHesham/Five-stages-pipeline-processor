@@ -65,11 +65,8 @@ module Processor(clk, rst, interrupt, in_port, out_port, pc, imm, EX_signals, ME
     wire [E_M_SIZE-1:0] Execute_in, Execute_out;
     wire [M_W_SIZE-1:0] Memory_in, Memory_out;
 
-    wire [1:0] FU_Src_Sel;
-    wire [1:0] FU_Dst_Sel;
-
-
-    //TODO PC_ENB, F_D_ENB, memory stage
+    wire [1:0] FU_src_sel;
+    wire [1:0] FU_dst_sel;
 
 //=======================================================FETCH STAGE====================================================
     fetch FetchStage(clk, rst, Rdst, Rdst_1, WD, BRANCH, FLUSH, PC_ENB && PC_ENB_CU , POP_L_H, JUMP_SEL, instr, imm, pc, pc_plus);
@@ -91,12 +88,14 @@ module Processor(clk, rst, interrupt, in_port, out_port, pc, imm, EX_signals, ME
 //=======================================================EXECUTE STAGE==================================================
     assign  {MEM_signals_1, EX_signals_1, WB_signals_1, Rsrc_1, Rdst_1, src_1, dst_1, shamt_1, imm_1, sp_1, in_port_2, pc_2, pc_plus_2} = Decode_out;
     
-    assign {BRANCH_TYPE, CALL, RSRC_SEL, RDST_SEL, ALU_OP, FLAGS_EN, ALU_EN} = EX_signals_1;
+    assign {BRANCH_TYPE, CALL, ALU_OP, RSRC_SEL, RDST_SEL, FLAGS_EN, ALU_EN} = EX_signals_1;
 
-    // TODO: dont forget to update FU_Src_Sel , FU_Dst_Sel
-    ExecuteStage letsCompute (clk,rst,EX_signals_1,FU_Src_Sel,FU_Dst_Sel,FLAGS_WRITE,Rsrc_1,Rdst_1,shamt_1,imm_1,sp_1,in_port_2,ALU_out_1,WD,ALU_out,flags);
+    // TODO: dont forget to update FU_src_sel , FU_dst_sel
+    ExecuteStage letsCompute (clk, rst, EX_signals_1, FU_src_sel, FU_dst_sel, FLAGS_WRITE, Rsrc_1, Rdst_1, shamt_1, imm_1, sp_1, in_port_2, ALU_out_1, WD,ALU_out, flags);
 
     Branch jmp_Handler(BRANCH_TYPE,flags,BRANCH);
+
+    FU fu (src_1, dst_1, dst_2, dst_3, WB_signals_2[0], REG_WRITE, WB_signals_1[5], WB_signals_2[5], SP_WRITE, FU_src_sel, FU_dst_sel);
 
     assign Execute_in = {MEM_signals_1, WB_signals_1, Rsrc_1, Rdst_1, dst_1, ALU_out, flags, sp_1, pc_2, pc_plus_2};
 //======================================================================================================================
@@ -114,8 +113,9 @@ module Processor(clk, rst, interrupt, in_port, out_port, pc, imm, EX_signals, ME
 //=======================================================WB STAGE=======================================================
     assign {WB_signals_3, RD_1, ALU_out_2, mux_lines[2], WA} = Memory_out;
 
-    assign {WB_SEL, REG_WRITE, POP_L_H, SP_WRITE, FLAGS_WRITE} = WB_signals_3;
+    assign {SP_WRITE, FLAGS_WRITE, WB_SEL, POP_L_H, REG_WRITE} = WB_signals_3;
 
     MUX #(W) WB_Mux('{RD_1, ALU_out_2}, WB_SEL, WD);
+//======================================================================================================================
 
 endmodule
