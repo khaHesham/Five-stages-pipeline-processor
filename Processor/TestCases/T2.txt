@@ -12,7 +12,7 @@ SETC;
 CLRC;
 OR R1,R3;  # R3 = 12
 AND R3,R5;
-SUB R0,R1; # negative flag=1   0-16
+SUB R0,R1; # negative flag=1
 DEC R2;
 
 

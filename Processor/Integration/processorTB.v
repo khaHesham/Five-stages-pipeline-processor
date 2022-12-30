@@ -3,7 +3,7 @@ module TB;
   localparam W = 16;
   localparam EX_SIGS_SIZE = 14;
   localparam MEM_SIGS_SIZE = 7;
-  localparam WB_SIGS_SIZE = 5;
+  localparam WB_SIGS_SIZE = 6;
   
   reg clk, rst, interrupt;
   reg [W-1:0] in_port;
@@ -16,7 +16,10 @@ module TB;
   wire [W-1:0] instr, imm, WD, ALU, out_port;
   wire [2:0] flags;
 
-  Processor processor_inst(clk, rst, interrupt, in_port, out_port, pc, imm, EX_signals, MEM_signals, WB_signals, ALU, flags, WD);
+  wire WB_SEL;
+  wire [1:0] FU_dst_sel;
+
+  Processor processor_inst(clk, rst, interrupt, in_port, out_port, pc, imm, EX_signals, MEM_signals, WB_signals, ALU, flags,instr, WD,WB_SEL,FU_dst_sel);
   
   always #(T/2) clk = ~clk;
 
