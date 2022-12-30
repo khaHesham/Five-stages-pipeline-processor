@@ -101,7 +101,7 @@ always @(*) begin
             end
     endcase
 
-    case(FU_Src_Sel)  // 2nd Mux
+    case(FU_Src_Sel)  // 3rd Mux
         Mux_output:
             begin
                 A = M1_output; 
@@ -120,7 +120,7 @@ always @(*) begin
             end
     endcase
 
-    case(FU_Dst_Sel)  // 2nd Mux
+    case(FU_Dst_Sel)  // 4th Mux
         Mux_output:
             begin
                 B = M2_output; 
