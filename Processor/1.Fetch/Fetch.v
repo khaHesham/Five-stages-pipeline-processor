@@ -1,6 +1,6 @@
 module fetch #(parameter W=16, SIZE=20)(clk, rst, Rdst_D, Rdst_E, WD, BRANCH, FLUSH, PC_ENB, POP_L_H, JUMP_SEL, instr, imm, pc, pc_1);
     
-    localparam START_ADDRESS = -1; //initial value of pc
+    localparam START_ADDRESS = 0; //initial value of pc
     localparam ISR = 32'b0; //interrupt service routine address
     localparam NOP = 16'b0;
 
