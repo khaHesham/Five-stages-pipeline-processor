@@ -1,0 +1,7 @@
+
+NOP;
+LDM R1,10;   # store alone done
+LDM R2,1;
+NOP;
+STD R1,R2;
+
