@@ -1,0 +1,3 @@
+NOP;
+LDD R1,R2;
+ADD R2,R3;

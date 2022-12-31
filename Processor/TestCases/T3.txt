@@ -1,0 +1,7 @@
+
+
+NOP;
+LDM R1,10;
+LDM R2,1;
+STD R1,R2;
+LDD R2,R3;
