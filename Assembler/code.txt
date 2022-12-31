@@ -1,21 +1,9 @@
+.ORG 0
+ADD R1,R2;
+
+.ORG 20
 NOP;
-LDM R1,10;    #R1 = 16
-MOV R1,R2;    #R2 = 16
-SHL R2,2;     #R2 = 64
-SHR R1,1;     #R1 = 8
-LDM R3,4;     #R3 = 4
-INC R3;       #R3 = 5
-LDM R5,00FF;
-LDM R6,FF01;
-ADD R5,R6;    #R6=0
-SETC;
-CLRC;
-OR R1,R3;  # R3 = 12
-AND R3,R5;
-SUB R0,R1; # negative flag=1   0-16
-DEC R2;
-
-
-
-
-
+LDM R1,4;  #load 4 in R1
+STD R1,R0; #store the value of R1(4) in location 0
+LDD R0,R2; #load location 0 in R2(R2 = 4)
+ADD R1,R2; #load use case (R2=4+4=8)
