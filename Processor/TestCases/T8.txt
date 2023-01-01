@@ -1,0 +1,4 @@
+NOP;
+LDM R1,5
+PUSH R1;  
+POP R3;  # R3=R1

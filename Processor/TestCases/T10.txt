@@ -1,0 +1,11 @@
+NOP;
+LDM R1,3;   # R1 = 3
+LDM R2,4;   # R2 = 4
+SUB R2,R1;
+JZ R0;
+NOT R7;
+
+
+
+
+
