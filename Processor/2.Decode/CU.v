@@ -59,7 +59,7 @@ module Control_Unit (opcode,interrupt,inst_before_call,inter_state_before,ret_st
     output reg [1:0]jump_sel;
     //for execute , memo and WB
     output reg [6:0] MEM_signals; //memRead(1), memWrite(1), memAddress(2), memData(3)
-    output reg [13:0] EX_signals;  //branch(3),call(1),alu_op(4),rsrc_sel(2),rdst_sel(2),flags_enb(1),alu_en(1)
+    output reg [12:0] EX_signals;  //branch(3),call(1),alu_op(4),rsrc_sel(2),rdst_sel(1),flags_enb(1),alu_en(1)  //modified rdst_sel
     output reg [5:0] WB_signals;  //sp_wr(1), flags_wb(1),wb_sel(1),pop_l_h(2),regwrite(1)
     output reg out_signal;
     
@@ -79,7 +79,7 @@ module Control_Unit (opcode,interrupt,inst_before_call,inter_state_before,ret_st
          pc_enable=0;
          flush=0;
          jump_sel=2'b00;
-         EX_signals=14'b00000001000001;
+        EX_signals=13'b0000111011001;
          MEM_signals=7'b0111010;
          WB_signals=6'b100000;
         out_signal = 1'b0;
@@ -90,7 +90,7 @@ module Control_Unit (opcode,interrupt,inst_before_call,inter_state_before,ret_st
         pc_enable=1;
         flush=0;
         jump_sel=2'b10;
-        EX_signals=14'b00000001000001;
+        EX_signals=13'b0000111011001;
         MEM_signals=7'b0111100;
         WB_signals=6'b100000;
         out_signal = 1'b0;
@@ -101,7 +101,7 @@ module Control_Unit (opcode,interrupt,inst_before_call,inter_state_before,ret_st
         pc_enable=1;
         flush=0;
         jump_sel=2'b00;
-        EX_signals=14'b00000001000001;
+        EX_signals=13'b0000111011001;
         MEM_signals=7'b0111011;
         WB_signals=6'b100000;
         out_signal = 1'b0;
@@ -119,7 +119,7 @@ module Control_Unit (opcode,interrupt,inst_before_call,inter_state_before,ret_st
         pc_enable=0;
         flush=0;
         jump_sel=2'b00;
-        EX_signals=14'b00000000000001;
+        EX_signals=13'b0000110111001;
         MEM_signals=7'b1010000;
         WB_signals=6'b101101;
         out_signal = 1'b0;
@@ -130,7 +130,7 @@ module Control_Unit (opcode,interrupt,inst_before_call,inter_state_before,ret_st
         pc_enable=0;
         flush=0;
         jump_sel=2'b00;
-        EX_signals=14'b00000000000001;
+        EX_signals=13'b0000110111001;
         MEM_signals=7'b1010000;
         WB_signals=6'b101111;
         out_signal = 1'b0;
@@ -141,7 +141,7 @@ module Control_Unit (opcode,interrupt,inst_before_call,inter_state_before,ret_st
         pc_enable=0;
         flush=0;
         jump_sel=2'b00;
-        EX_signals=14'b00000000000000;
+        EX_signals=13'b0000000000000;
         MEM_signals=7'b0000000;
         WB_signals=6'b000000;
         out_signal = 1'b0;
@@ -152,7 +152,7 @@ module Control_Unit (opcode,interrupt,inst_before_call,inter_state_before,ret_st
         pc_enable=1;
         flush=0;
         jump_sel=2'b11;
-        EX_signals=14'b00000000000000;
+        EX_signals=13'b0000000000000;
         MEM_signals=7'b0000000;
         WB_signals=6'b000000;
         out_signal = 1'b0;
@@ -163,7 +163,7 @@ module Control_Unit (opcode,interrupt,inst_before_call,inter_state_before,ret_st
         pc_enable=1;
         flush=0;
         jump_sel=2'b00;
-        EX_signals=14'b00000000000000;
+        EX_signals=13'b0000000000000;
         MEM_signals=7'b0000000;
         WB_signals=6'b000000;
         out_signal = 1'b0;
@@ -181,7 +181,7 @@ module Control_Unit (opcode,interrupt,inst_before_call,inter_state_before,ret_st
         pc_enable=0;
         flush=0;
         jump_sel=2'b00;
-        EX_signals=14'b00000000000001;
+        EX_signals=13'b0000110111001;
         MEM_signals=7'b1010000;
         WB_signals=6'b111000;
         out_signal = 1'b0;
@@ -192,7 +192,7 @@ module Control_Unit (opcode,interrupt,inst_before_call,inter_state_before,ret_st
         pc_enable=0;
         flush=0;
         jump_sel=2'b00;
-        EX_signals=14'b00000000000001;
+        EX_signals=13'b0000110111001;
         MEM_signals=7'b1010000;
         WB_signals=6'b101101;
         out_signal = 1'b0;
@@ -203,7 +203,7 @@ module Control_Unit (opcode,interrupt,inst_before_call,inter_state_before,ret_st
         pc_enable=0;
         flush=0;
         jump_sel=2'b00;
-        EX_signals=14'b00000000000001;
+        EX_signals=13'b0000110111001;
         MEM_signals=7'b1010000;
         WB_signals=6'b101111;
         out_signal = 1'b0;
@@ -214,7 +214,7 @@ module Control_Unit (opcode,interrupt,inst_before_call,inter_state_before,ret_st
         pc_enable=0;
         flush=0;
         jump_sel=2'b00;
-        EX_signals=14'b00000000000000;
+        EX_signals=13'b0000000000000;
         MEM_signals=7'b0000000;
         WB_signals=6'b000000;
         out_signal = 1'b0;
@@ -225,7 +225,7 @@ module Control_Unit (opcode,interrupt,inst_before_call,inter_state_before,ret_st
         pc_enable=1;
         flush=0;
         jump_sel=2'b11;
-        EX_signals=14'b00000000000000;
+        EX_signals=13'b0000000000000;
         MEM_signals=7'b0000000;
         WB_signals=6'b000000;
         out_signal = 1'b0;
@@ -236,7 +236,7 @@ module Control_Unit (opcode,interrupt,inst_before_call,inter_state_before,ret_st
         pc_enable=1;
         flush=0;
         jump_sel=2'b00;
-        EX_signals=14'b00000000000000;
+        EX_signals=13'b0000000000000;
         MEM_signals=7'b0000000;
         WB_signals=6'b000000;
         out_signal = 1'b0;
@@ -252,7 +252,7 @@ module Control_Unit (opcode,interrupt,inst_before_call,inter_state_before,ret_st
         pc_enable=1;
         flush=0;
         jump_sel=2'b00;
-        EX_signals=14'b00000001001001;
+        EX_signals=13'b0000111011001;
         MEM_signals=7'b0111101;
         WB_signals=6'b100000;
         out_signal = 1'b0;
@@ -268,105 +268,105 @@ module Control_Unit (opcode,interrupt,inst_before_call,inter_state_before,ret_st
         case (opcode)
             NOP: begin                 //NOP
         jump_sel=2'b00;
-        EX_signals=14'b00000000000000;
+        EX_signals=13'b0000000000000;
         MEM_signals=7'b0000000;
         WB_signals=6'b000000;
         out_signal = 1'b0;
             end
             SETC:begin        //SETC
         jump_sel=2'b00;
-        EX_signals=14'b00001010000011;
+        EX_signals=13'b0000101000011;
         MEM_signals=7'b0000000;
         WB_signals=6'b000000;
         out_signal = 1'b0;
             end
             CLRC:begin         //CLCR
         jump_sel=2'b00;
-        EX_signals=14'b00001011000011;
+        EX_signals=13'b0000101100011;
         MEM_signals=7'b0000000;
         WB_signals=6'b000000;
         out_signal = 1'b0;
             end
             NOT: begin        //NOT
         jump_sel=2'b00;
-        EX_signals=14'b00000101000011;
+        EX_signals=13'b0000010100011;
         MEM_signals=7'b0000000;
         WB_signals=6'b000001;
         out_signal = 1'b0;
             end
             INC:begin           //INC
         jump_sel=2'b00;
-        EX_signals=14'b00000000000011;
+        EX_signals=13'b0000000000011;
         MEM_signals=7'b0000000;
         WB_signals=6'b000001;
         out_signal = 1'b0;
             end
             DEC:begin      //DEC
         jump_sel=2'b00;
-        EX_signals=14'b00000001000011;
+        EX_signals=13'b0000000100011;
         MEM_signals=7'b0000000;
         WB_signals=6'b000001;
         out_signal = 1'b0;
             end
             PUSH:begin         //PUSH
         jump_sel=2'b00;
-        EX_signals=14'b00000001000001;
+        EX_signals=13'b0000111011001;
         MEM_signals=7'b0111001;
         WB_signals=6'b100000;
         out_signal = 1'b0;
             end
             POP:begin       //POP
         jump_sel=2'b00;
-        EX_signals=14'b00000000000001;
+        EX_signals=13'b0000110111001;
         MEM_signals=7'b1010000;
         WB_signals=6'b101001;
         out_signal = 1'b0;
             end
             ADD: begin             //ADD
         jump_sel=2'b00;
-        EX_signals=14'b00000010000011;
+        EX_signals=13'b0000001000011;
         MEM_signals=7'b0000000;
         WB_signals=6'b000001;
         out_signal = 1'b0;
             end
             SUB:begin        //SUB
         jump_sel=2'b00;
-        EX_signals=14'b00000011000011;
+        EX_signals=13'b0000001100011;
         MEM_signals=7'b0000000;
         WB_signals=6'b000001;
         out_signal = 1'b0;
             end
             AND:begin          //AND
         jump_sel=2'b00;
-        EX_signals=14'b00000111000011;
+        EX_signals=13'b0000011100011;
         MEM_signals=7'b0000000;
         WB_signals=6'b000001;
         out_signal = 1'b0;
             end
             OR:begin          //OR
         jump_sel=2'b00;
-        EX_signals=14'b00000110000011;
+        EX_signals=13'b0000011000011;
         MEM_signals=7'b0000000;
         WB_signals=6'b000001;
         out_signal = 1'b0;
             end
             MOV:begin          //MOV
         jump_sel=2'b00;
-        EX_signals=14'b00000100000001;
+        EX_signals=13'b0000010000001;
         MEM_signals=7'b0000000;
         WB_signals=6'b000001;
         out_signal = 1'b0;
             end
             SHL:begin             //SHL
         jump_sel=2'b00;
-        EX_signals=14'b00001000000011;
+        EX_signals=13'b0000100000111;
         MEM_signals=7'b0000000;
         WB_signals=6'b000001;
         out_signal = 1'b0;
             end
             SHR:begin           //SHR
         jump_sel=2'b00;
-        EX_signals=14'b00001001000011;
+        EX_signals=13'b0000100100111;
         MEM_signals=7'b0000000;
         WB_signals=6'b000001;
         out_signal = 1'b0;
@@ -374,42 +374,42 @@ module Control_Unit (opcode,interrupt,inst_before_call,inter_state_before,ret_st
             LDM: begin               //LDM
         flush=1;
         jump_sel=2'b00;
-        EX_signals=14'b00000100100001;
+        EX_signals=13'b0000010010001;
         MEM_signals=7'b0000000;
         WB_signals=6'b000001;
         out_signal = 1'b0;
             end
             LDD:begin          //LDD
         jump_sel=2'b00;
-        EX_signals=14'b00000000000000;
+        EX_signals=13'b0000000000000;
         MEM_signals=7'b1000000;
         WB_signals=6'b001001;
         out_signal = 1'b0;
             end
             STD: begin      //STD
         jump_sel=2'b00;
-        EX_signals=14'b00000000000000;
+        EX_signals=13'b0000000000000;
         MEM_signals=7'b0101000;
         WB_signals=6'b000000;
         out_signal = 1'b0;
             end
             JZ:begin              //JZ
         jump_sel=2'b00;
-        EX_signals=14'b00100000000000;
+        EX_signals=13'b0010000000000;
         MEM_signals=7'b0000000;
         WB_signals=6'b000000;    
         out_signal = 1'b0;
             end
             JN:begin                 //JN
         jump_sel=2'b00;
-        EX_signals=14'b01001010000000;
+        EX_signals=13'b0100101000000;
         MEM_signals=7'b0000000;
         WB_signals=6'b000000;       
         out_signal = 1'b0;
             end
             JC:begin                  //JC
         jump_sel=2'b00;
-        EX_signals=14'b01101010000000;
+        EX_signals=13'b0110101000000;
         MEM_signals=7'b0000000;
         WB_signals=6'b000000;
         out_signal = 1'b0;
@@ -417,21 +417,21 @@ module Control_Unit (opcode,interrupt,inst_before_call,inter_state_before,ret_st
             JMP:begin              //JMP
         flush=1;
         jump_sel=2'b01;
-        EX_signals=14'b10001010000000;
+        EX_signals=13'b1000101000000;
         MEM_signals=7'b0000000;
         WB_signals=6'b000000;
         out_signal = 1'b0;
             end
             OUT:begin             //OUT
         jump_sel=2'b00;
-        EX_signals=14'b00001100000001;
+        EX_signals=13'b0000110000001;
         MEM_signals=7'b0000000;
         WB_signals=6'b000000;
         out_signal = 1'b1;
             end
             IN:begin            //IN
         jump_sel=2'b00;
-        EX_signals=14'b00000100010001;
+        EX_signals=13'b0000010001001;
         MEM_signals=7'b0000000;
         WB_signals=6'b000001;
         out_signal = 1'b0;
@@ -439,14 +439,14 @@ module Control_Unit (opcode,interrupt,inst_before_call,inter_state_before,ret_st
             CALL:begin         //CALL
         f_d_buffer_enable=0;
         jump_sel=2'b00;
-        EX_signals=14'b00010001001001;
+        EX_signals=13'b0000111011001;
         MEM_signals=7'b0111110;
         WB_signals=6'b100000;
         out_signal = 1'b0;
             end
                 default: begin //NOP
         jump_sel=2'b00;
-        EX_signals=14'b00000000000000;
+        EX_signals=13'b0000000000000;
         MEM_signals=7'b0000000;
         WB_signals=6'b000000;
         out_signal = 1'b0;

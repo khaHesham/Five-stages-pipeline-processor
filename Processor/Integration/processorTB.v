@@ -1,7 +1,7 @@
 module TB;
   localparam T = 100;
   localparam W = 16;
-  localparam EX_SIGS_SIZE = 14;
+  localparam EX_SIGS_SIZE = 13;
   localparam MEM_SIGS_SIZE = 7;
   localparam WB_SIGS_SIZE = 6;
   
@@ -20,7 +20,11 @@ module TB;
   wire [1:0] FU_dst_sel;
   wire [W-1:0]sp;
 
-  Processor processor_inst(clk, rst, interrupt, in_port, out_port, pc, imm, EX_signals, MEM_signals, WB_signals, ALU, flags,instr, WD,WB_SEL,FU_dst_sel, sp);
+  // TODO: to be removed
+  wire [3:0] shamt_1;
+  wire HAZARD_POP;
+
+  Processor processor_inst(clk, rst, interrupt, in_port, out_port, pc, imm, EX_signals, MEM_signals, WB_signals, ALU, flags,instr, WD,WB_SEL,FU_dst_sel, sp,shamt_1,HAZARD_POP);
   
   always #(T/2) clk = ~clk;
 

@@ -18,13 +18,13 @@ module FU (src, dst, dst_MEM, dst_WB, WB_MEM, WB_WB, EX_SP_W, MEM_SP_W, WB_SP_W,
     // if (MEM_SP_W||WB_SP_W) sel_src <= 2'b10;
     // if (MEM_SP_W||WB_SP_W) sel_dst <= 2'b10;
 
-    if(src == dst_MEM && WB_MEM) sel_src = 2'b10; //ALU to ALU forwarding
+    if(src == dst_MEM && WB_MEM || EX_SP_W && MEM_SP_W) sel_src = 2'b10; //ALU to ALU forwarding
     else if(src == dst_WB && WB_WB) sel_src = 2'b01; //MEM to ALU forwarding
+    else if(EX_SP_W && WB_SP_W) sel_src = 2'b11; //MEM to ALU forwading in case of sp
     else sel_src = 2'b00; //No forwarding
 
-    if(dst == dst_MEM && WB_MEM || EX_SP_W && MEM_SP_W) sel_dst = 2'b10; //ALU to ALU forwarding
+    if(dst == dst_MEM && WB_MEM ) sel_dst = 2'b10; //ALU to ALU forwarding
     else if(dst == dst_WB && WB_WB) sel_dst = 2'b01; //MEM to ALU forwarding
-    else if(EX_SP_W && WB_SP_W) sel_dst = 2'b11; //MEM to ALU forwading in case of sp
     else sel_dst = 2'b00; //No forwarding
 
   end

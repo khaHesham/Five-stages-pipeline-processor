@@ -51,7 +51,7 @@ for i,instruction in enumerate(instructions):
         skipAmount = int(instruction.split(' ')[1],16)
         if  skipAmount > addressCounter:
             for i in range(addressCounter,skipAmount + 1):
-                IRCodes.append(" \n")
+                IRCodes.append("0000000000000000" + "\n")
             addressCounter = skipAmount
         else:
             addressCounter = skipAmount
