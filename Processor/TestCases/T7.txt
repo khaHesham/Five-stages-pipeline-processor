@@ -1,0 +1,5 @@
+#Input output case test (working)
+NOP;
+IN R1 #0000000000010000
+ADD R1,R2
+OUT R2

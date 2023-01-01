@@ -1,6 +1,6 @@
 `include "../2.Decode/Register.v"
 
-module ExecuteStage (clk,rst,EX,FU_Src_Sel,FU_Dst_Sel,flags_wb,Rsrc,Rdst,shiftamount,Immediate,SP_Low,IN_PORT,ALU_After_E_M,WB,ALU_MW,ALU_Result,flags_out,SP_Before);
+module ExecuteStage (clk,rst,EX,FU_Src_Sel,FU_Dst_Sel,flags_wb,Rsrc,Rdst,shiftamount,Immediate,SP_Low,IN_PORT,ALU_After_E_M,WB,ALU_MW,ALU_Result,flags_out,SP_Before, A, B);
 
 // {* =======================  CONSTANTS  ====================== *}
 
@@ -58,8 +58,8 @@ wire [2:0] Flags;       // CarryOut(1),NegativeFlag(1),ZeroFlag(1)
 wire [2:0] f_out;
 wire [2:0] f_in;
 
-reg [W-1:0] A;          // first operand of ALU
-reg [W-1:0] B;          // second operand of ALU
+output reg [W-1:0] A;          // first operand of ALU
+output reg [W-1:0] B;          // second operand of ALU
 reg [W-1:0] M1_output;  // output of First Mux  
 reg [W-1:0] M2_output;
 

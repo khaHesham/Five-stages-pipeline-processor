@@ -1,9 +1,4 @@
-.ORG 0
-ADD R1,R2;
-
-.ORG 20
 NOP;
-LDM R1,4;  #load 4 in R1
-STD R1,R0; #store the value of R1(4) in location 0
-LDD R0,R2; #load location 0 in R2(R2 = 4)
-ADD R1,R2; #load use case (R2=4+4=8)
+LDM R1,20; #R1 <= 32
+PUSH R1;
+POP R3;
