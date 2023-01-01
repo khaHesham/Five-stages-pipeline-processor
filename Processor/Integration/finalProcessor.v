@@ -4,7 +4,7 @@
 `include "../4.Memory/Memo.v"
 `include "../5.WriteBack/WB.v"
 
-module Processor(clk, rst, interrupt, in_port, out_port, pc, imm, EX_signals_1, MEM_signals, WB_signals, ALU_out, flags,instr, WD,WB_SEL,FU_dst_sel, sp,shamt_1,HAZARD_POP);
+module Processor(clk, rst, interrupt, in_port, out_port, pc, imm, EX_signals_1, MEM_signals, WB_signals, ALU_out, flags,instr, WD,WB_SEL,Rsrc_2, sp,shamt_1,HAZARD_POP,ret_state_before,ret_address);
     
 //====================================================CONSTANTS=======================================================
     localparam W = 16;
@@ -26,7 +26,6 @@ module Processor(clk, rst, interrupt, in_port, out_port, pc, imm, EX_signals_1, 
 
     output WB_SEL;
     output[W-1:0] instr;
-    output [1:0] FU_dst_sel;
 
 
     output [31:0] pc;
@@ -38,9 +37,12 @@ module Processor(clk, rst, interrupt, in_port, out_port, pc, imm, EX_signals_1, 
     output [W-1:0] sp;
 
     // TODO: clear this shit after testing
-    
+
     output [3:0] shamt_1;
     output HAZARD_POP;
+    output [2:0] ret_state_before;
+    output [31:0] ret_address;
+    output [15:0] Rsrc_2;
    
     
    
@@ -89,7 +91,7 @@ module Processor(clk, rst, interrupt, in_port, out_port, pc, imm, EX_signals_1, 
     
 
 //=======================================================FETCH STAGE====================================================
-    fetch FetchStage(clk, rst, Rdst, Rdst_1, WD, BRANCH, FLUSH, PC_ENB && PC_ENB_CU , POP_L_H, JUMP_SEL, instr, imm, pc, pc_plus);
+    fetch FetchStage(clk, rst, Rdst, Rdst_1, WD, BRANCH, FLUSH, PC_ENB && PC_ENB_CU , POP_L_H, JUMP_SEL, instr, imm, pc, pc_plus,ret_address);
 
     assign Fetch_in = {interrupt, instr, pc, pc_plus, in_port};
 //======================================================================================================================
@@ -100,7 +102,7 @@ module Processor(clk, rst, interrupt, in_port, out_port, pc, imm, EX_signals_1, 
     HDU hdu_inst(src, dst, dst_1, MEM_signals_1[6], F_D_ENB, PC_ENB, FLUSH_LOAD_USE,HAZARD_POP);
 
     Decode DecodeStage (clk, rst, opcode, interrupt_1, CALL, src, dst, REG_WRITE, WD, WA, Rsrc, Rdst, MEM_signals, EX_signals, WB_signals,
-        FLUSH, BRANCH, FLUSH_LOAD_USE, sp, ALU_out_2, SP_WRITE, F_D_ENB_CU, PC_ENB_CU, JUMP_SEL, out_signal,HAZARD_POP);
+        FLUSH, BRANCH, FLUSH_LOAD_USE, sp, ALU_out_2, SP_WRITE, F_D_ENB_CU, PC_ENB_CU, JUMP_SEL, out_signal,HAZARD_POP,ret_state_before);
 
     assign Decode_in = {MEM_signals, EX_signals, WB_signals, Rsrc, Rdst, src, dst, shamt, imm, sp, in_port_1, pc_1, pc_plus_1, out_signal};
 //======================================================================================================================

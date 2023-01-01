@@ -8,3 +8,4 @@ POP R3;  # R3 = 4
 PUSH R2; 
 POP R4; # R4 = 8
 ADD R4,R3;  # R3 = 12
+MOV R3,R6;

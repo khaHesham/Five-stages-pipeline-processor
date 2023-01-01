@@ -119,9 +119,9 @@ module Control_Unit (opcode,interrupt,inst_before_call,inter_state_before,ret_st
         pc_enable=0;
         flush=0;
         jump_sel=2'b00;
-        EX_signals=13'b0000110111001;
+        EX_signals=13'b000_0_1101_11_0_01;
         MEM_signals=7'b1010000;
-        WB_signals=6'b101101;
+        WB_signals=6'b101100; //TODO: regwrite was 1
         out_signal = 1'b0;
        end
        POP_1_RET:begin    //pop_2
@@ -132,7 +132,7 @@ module Control_Unit (opcode,interrupt,inst_before_call,inter_state_before,ret_st
         jump_sel=2'b00;
         EX_signals=13'b0000110111001;
         MEM_signals=7'b1010000;
-        WB_signals=6'b101111;
+        WB_signals=6'b101110; //TODO: regwrite was 1
         out_signal = 1'b0;
        end
        POP_2_RET:begin     //NOP1
@@ -438,8 +438,8 @@ module Control_Unit (opcode,interrupt,inst_before_call,inter_state_before,ret_st
             end
             CALL:begin         //CALL
         f_d_buffer_enable=0;
-        jump_sel=2'b00;
-        EX_signals=13'b0000111011001;
+        jump_sel=2'b01; 
+        EX_signals=13'b0001111011001;
         MEM_signals=7'b0111110;
         WB_signals=6'b100000;
         out_signal = 1'b0;

@@ -2,7 +2,7 @@ module Decode(
      clk, rst,
      opcode,interrupt,inst_before_call,src,dst,
      regWrite, WD, WA, Rsrc, Rdst, MEM_signals, EX_signals, 
-     WB_signals,flush,branch_signal,detection_signal,sp,sp_value,sp_write_enable, f_d_buffer_enable, pc_enable, jump_sel, out_signal,HAZARD_POP);
+     WB_signals,flush,branch_signal,detection_signal,sp,sp_value,sp_write_enable, f_d_buffer_enable, pc_enable, jump_sel, out_signal,HAZARD_POP,ret_state_before);
     
   localparam W = 16;
   localparam N = 3;
@@ -33,6 +33,8 @@ module Decode(
 
   output HAZARD_POP;
 
+  output [2:0] ret_state_before;
+
   wire [1:0] inter_state_before, inter_state_after; 
   wire [2:0] ret_state_before,ret_state_after; 
   wire [2:0] reti_state_before, reti_state_after;
@@ -46,9 +48,9 @@ module Decode(
 
    
 //states
-Register_neg  #(3)return_state(clk, rst, 1'b1, ret_state_after, ret_state_before);
-Register_neg  #(2)interrupt_state(clk, rst, 1'b1, inter_state_after, inter_state_before);
-Register_neg  #(3)return_interrupt_state(clk, rst, 1'b1, reti_state_after, reti_state_before);
+Register  #(3)return_state(clk, rst, 1'b1, ret_state_after, ret_state_before);
+Register  #(2)interrupt_state(clk, rst, 1'b1, inter_state_after, inter_state_before);
+Register  #(3)return_interrupt_state(clk, rst, 1'b1, reti_state_after, reti_state_before);
   
 signExtend signextended(sp_value, out);
 //

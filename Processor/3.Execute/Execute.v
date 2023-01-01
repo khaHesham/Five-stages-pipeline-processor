@@ -74,7 +74,7 @@ module ALU(
                   negativeFlag = ALU_Result[16];
                   zeroflag=( !ALU_Out ) ? 1 : 0; 
                 end
-                
+
               INC_SP: 
                 begin
                   ALU_Result = A + 1;
@@ -125,7 +125,7 @@ module ALU(
                   zeroflag=( !ALU_Out ) ? 1 : 0;
                 end
 
-              SHL:  // TODO: how can i set carry flag for multi shifts ?
+              SHL:  
                 begin
                   carry = A[15];  
                   ALU_Result = A <<< shiftamount ;  // it has to be shifted with shiftamount
@@ -133,7 +133,7 @@ module ALU(
                   zeroflag=( !ALU_Out ) ? 1 : 0;
                 end
 
-              SHR:  // TODO: how can i set carry flag for multi shifts ?
+              SHR:  
                 begin
                   carry = A[0]; 
                   ALU_Result = A >>> shiftamount ;  
@@ -141,7 +141,7 @@ module ALU(
                   zeroflag=( !ALU_Out ) ? 1 : 0;
                 end
 
-              OUT:  // TODO: how can i set carry flag for multi shifts ?
+              OUT: 
                 begin
                   ALU_Result = B;
                 end
