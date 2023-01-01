@@ -1,1 +1,4 @@
-POP R1;
+NOP;
+LDM R1,20; #R1 <= 32
+PUSH R1;
+POP R3;

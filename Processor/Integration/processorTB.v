@@ -18,8 +18,9 @@ module TB;
 
   wire WB_SEL;
   wire [1:0] FU_dst_sel;
+  wire [W-1:0]sp;
 
-  Processor processor_inst(clk, rst, interrupt, in_port, out_port, pc, imm, EX_signals, MEM_signals, WB_signals, ALU, flags,instr, WD,WB_SEL,FU_dst_sel);
+  Processor processor_inst(clk, rst, interrupt, in_port, out_port, pc, imm, EX_signals, MEM_signals, WB_signals, ALU, flags,instr, WD,WB_SEL,FU_dst_sel, sp);
   
   always #(T/2) clk = ~clk;
 

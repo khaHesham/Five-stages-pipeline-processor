@@ -2,10 +2,11 @@ module Decode(
      clk, rst,
      opcode,interrupt,inst_before_call,src,dst,
      regWrite, WD, WA, Rsrc, Rdst, MEM_signals, EX_signals, 
-     WB_signals,flush,branch_signal,detection_signal,sp,sp_value,sp_write_enable, f_d_buffer_enable, pc_enable, jump_sel);
+     WB_signals,flush,branch_signal,detection_signal,sp,sp_value,sp_write_enable, f_d_buffer_enable, pc_enable, jump_sel, out_signal);
     
   localparam W = 16;
   localparam N = 3;
+  localparam STACK_START = 2**11-1;
 
   input clk, rst, regWrite, interrupt,inst_before_call,sp_write_enable; //regWrite coming from WB
   input [W-1:0] WD; //WD comingg from WB
@@ -26,6 +27,7 @@ module Decode(
 
   output f_d_buffer_enable, pc_enable;
   output [1:0] jump_sel;
+  output out_signal;
 
   wire [1:0] inter_state_before, inter_state_after; 
   wire [2:0] ret_state_before,ret_state_after; 
@@ -47,7 +49,7 @@ Register_neg  #(3)return_interrupt_state(clk, rst, 1'b1, reti_state_after, reti_
 signExtend signextended(sp_value, out);
 //
 
-Register_neg  #(32)sp_reg(clk, rst, sp_write_enable, out, sp_total);
+Register_neg  #(32, STACK_START)sp_reg(clk, rst, sp_write_enable, out, sp_total);
 assign sp=sp_total[15:0];
 
 assign sel = branch_signal || detection_signal;
@@ -71,7 +73,7 @@ MUX #(14) mux_1 ( // determins EX_signals
 
 
 
-    Control_Unit cu(opcode,interrupt,inst_before_call,inter_state_before,ret_state_before,reti_state_before,f_d_buffer_enable,pc_enable,flush,jump_sel,MEM_signals,EX_signals,WB_signals,inter_state_after,ret_state_after,reti_state_after);
+    Control_Unit cu(opcode,interrupt,inst_before_call,inter_state_before,ret_state_before,reti_state_before,f_d_buffer_enable,pc_enable,flush,jump_sel,MEM_signals_in,EX_signals_in,WB_signals_in,inter_state_after,ret_state_after,reti_state_after, out_signal);
     regFile regFile_inst(clk, rst, regWrite, WD, WA, src, dst, Rsrc, Rdst);
 
 endmodule
