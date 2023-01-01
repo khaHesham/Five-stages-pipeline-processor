@@ -3,6 +3,7 @@ module ALU(
            input ALU_EN,                            // ALU Enable
            input [3:0] Function_Control,            // ALU_OP
            input [3:0] shiftamount,                 // shift amount
+           input [2:0] flags_old,
            output [15:0] ALU_Out,                   // ALU 16-bit Output
            output CarryOut,NegativeFlag,ZeroFlag    // Carry Out Flag ,NegativeFlag,ZeroFlag
     );
@@ -23,43 +24,53 @@ module ALU(
         /**/                            /**/
         /**/  localparam SHR =4'b1001;  /**/
         /**/  localparam SETC=4'b1010;  /**/
-        /**/  localparam CLC =4'b1011;  /**/
+        /**/  localparam CLC =4'b1011;
+              localparam OUT = 4'b1100;
         /**********************************/
 
     reg [16:0] ALU_Result;
     reg carry;
     reg negativeFlag;
+    reg zeroflag;
 
 
     always @(*)
     begin
         if(ALU_EN==1)
         begin
-            carry=0;
-            negativeFlag=0;
+            carry=1'b0;
+            negativeFlag=1'b0;
+            zeroflag=1'b0;
+
             case(Function_Control)
               SETC: 
                 begin
                   ALU_Result = 4'hzzzz;
                   carry = 1;
+                  negativeFlag=flags_old[1];
+                  zeroflag=flags_old[0];
                 end
 
               CLC: 
                 begin
                   ALU_Result = 4'hzzzz;
                   carry = 0;
+                  negativeFlag=flags_old[1];
+                  zeroflag=flags_old[0];
                 end
 
               INC: 
                 begin
                   ALU_Result = B + 1;
                   carry = ALU_Result[16];
+                  zeroflag=( !ALU_Out ) ? 1 : 0;
                 end
 
               DEC: 
                 begin
                   ALU_Result = B - 1;
                   negativeFlag = ALU_Result[16];
+                  zeroflag=( !ALU_Out ) ? 1 : 0;
                   
                 end
 
@@ -67,34 +78,40 @@ module ALU(
                 begin
                   ALU_Result = A + B;
                   carry=ALU_Result[16];
+                  zeroflag=( !ALU_Out ) ? 1 : 0;
                 end
 
               SUB: 
                 begin
                   ALU_Result = A - B;
                   negativeFlag = ALU_Result[16];
+                  zeroflag=( !ALU_Out ) ? 1 : 0;
                 end
 
               NOT: 
                 begin
                   ALU_Result = ~B;
+                  zeroflag=( !ALU_Out ) ? 1 : 0;
                 end
 
               MOV: 
                 begin
                   ALU_Result = A;
+                  zeroflag=( !ALU_Out ) ? 1 : 0;
                 end
 
               AND: 
                 begin
                   ALU_Result = A & B;
                   negativeFlag = ALU_Result[16];
+                  zeroflag=( !ALU_Out ) ? 1 : 0;
                 end
 
               OR: 
                 begin
                   ALU_Result = A | B;
                   negativeFlag = ALU_Result[16];
+                  zeroflag=( !ALU_Out ) ? 1 : 0;
                 end
 
               SHL:  // TODO: how can i set carry flag for multi shifts ?
@@ -102,6 +119,7 @@ module ALU(
                   carry = A[15];  
                   ALU_Result = A <<< shiftamount ;  // it has to be shifted with shiftamount
                   negativeFlag = ALU_Result[16];
+                  zeroflag=( !ALU_Out ) ? 1 : 0;
                 end
 
               SHR:  // TODO: how can i set carry flag for multi shifts ?
@@ -109,6 +127,12 @@ module ALU(
                   carry = A[0]; 
                   ALU_Result = A >>> shiftamount ;  
                   negativeFlag = ALU_Result[16];
+                  zeroflag=( !ALU_Out ) ? 1 : 0;
+                end
+
+              OUT:  // TODO: how can i set carry flag for multi shifts ?
+                begin
+                  ALU_Result = B;
                 end
 
               default:begin
@@ -124,7 +148,7 @@ module ALU(
 
     assign ALU_Out = ALU_Result[15:0]; // ALU out
     assign NegativeFlag = negativeFlag;
-    assign ZeroFlag =( !ALU_Out ) ? 1 : 0; // Zero flag
-    assign CarryOut=carry; //carry
+    assign ZeroFlag = zeroflag; // Zero flag
+    assign CarryOut = carry; //carry
 
 endmodule

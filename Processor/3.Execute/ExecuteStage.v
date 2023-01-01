@@ -1,6 +1,6 @@
 `include "../2.Decode/Register.v"
 
-module ExecuteStage (clk,rst,EX,FU_Src_Sel,FU_Dst_Sel,flags_wb,Rsrc,Rdst,shiftamount,Immediate,SP_Low,IN_PORT,ALU_After_E_M,WB,ALU_Result,flags_out);
+module ExecuteStage (clk,rst,EX,FU_Src_Sel,FU_Dst_Sel,flags_wb,Rsrc,Rdst,shiftamount,Immediate,SP_Low,IN_PORT,ALU_After_E_M,WB,ALU_MW,ALU_Result,flags_out,SP_Before, A, B);
 
 // {* =======================  CONSTANTS  ====================== *}
 
@@ -20,6 +20,7 @@ localparam sp_M2=2'b10;
 localparam Mux_output=2'b00;
 localparam wb=2'b01;
 localparam ALU_out_after_E_M = 2'b10;
+localparam ALU_M_W = 2'b11;
 
 
 
@@ -43,11 +44,13 @@ input [W-1:0] SP_Low;
 input [W-1:0] IN_PORT;
 input [W-1:0] ALU_After_E_M;
 input [W-1:0] WB;
+input [W-1:0] ALU_MW;
 
 // {* ========================  DATA OUT  ======================= *}
 
 output [W-1:0] ALU_Result;
 output [2:0] flags_out;
+output [W-1:0] SP_Before;
 
 
 // {* ======================= Registers & Wires ======================= *} 
@@ -55,8 +58,8 @@ wire [2:0] Flags;       // CarryOut(1),NegativeFlag(1),ZeroFlag(1)
 wire [2:0] f_out;
 wire [2:0] f_in;
 
-reg [W-1:0] A;          // first operand of ALU
-reg [W-1:0] B;          // second operand of ALU
+output reg [W-1:0] A;          // first operand of ALU
+output reg [W-1:0] B;          // second operand of ALU
 reg [W-1:0] M1_output;  // output of First Mux  
 reg [W-1:0] M2_output;
 
@@ -101,7 +104,7 @@ always @(*) begin
             end
     endcase
 
-    case(FU_Src_Sel)  // 2nd Mux
+    case(FU_Src_Sel)  // 3rd Mux
         Mux_output:
             begin
                 A = M1_output; 
@@ -120,7 +123,7 @@ always @(*) begin
             end
     endcase
 
-    case(FU_Dst_Sel)  // 2nd Mux
+    case(FU_Dst_Sel)  // 4th Mux
         Mux_output:
             begin
                 B = M2_output; 
@@ -133,6 +136,11 @@ always @(*) begin
             begin
                 B = ALU_After_E_M;
             end
+        ALU_M_W:
+            begin
+                B = ALU_MW;  
+            end
+
         default:
             begin
                 B = M2_output;
@@ -141,13 +149,15 @@ always @(*) begin
 end
 
 
-ALU ourALU(A,B,EX[0],EX[9:6],shiftamount,ALU_Result,Flags[2],Flags[1],Flags[0]);
+ALU ourALU(A,B,EX[0],EX[9:6],shiftamount,f_in,ALU_Result,Flags[2],Flags[1],Flags[0]);
 
 assign f_in=(flags_wb)? WB[3:0] : Flags;
 
 Register_neg #(3) flags_inst(clk, rst, EX[1] || flags_wb, f_in, f_out);
 
 assign flags_out = f_out;
+
+assign SP_Before = B;
 
 
 

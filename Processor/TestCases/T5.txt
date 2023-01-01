@@ -1,0 +1,11 @@
+
+NOP;
+LDM R1,10;
+LDM R2,1;
+NOP;      # to overcome problem in ld use case for now
+STD R1,R2;  
+LDD R2,R3;
+ADD R1,R3;
+
+
+
