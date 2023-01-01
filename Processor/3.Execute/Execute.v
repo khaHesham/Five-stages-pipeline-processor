@@ -24,7 +24,8 @@ module ALU(
         /**/                            /**/
         /**/  localparam SHR =4'b1001;  /**/
         /**/  localparam SETC=4'b1010;  /**/
-        /**/  localparam CLC =4'b1011;  /**/
+        /**/  localparam CLC =4'b1011;
+              localparam OUT = 4'b1100;
         /**********************************/
 
     reg [16:0] ALU_Result;
@@ -37,9 +38,9 @@ module ALU(
     begin
         if(ALU_EN==1)
         begin
-            carry=flags_old[2];
-            negativeFlag=flags_old[1];
-            zeroflag=flags_old[0];
+            carry=1'b0;
+            negativeFlag=1'b0;
+            zeroflag=1'b0;
 
             case(Function_Control)
               SETC: 
@@ -127,6 +128,11 @@ module ALU(
                   ALU_Result = A >>> shiftamount ;  
                   negativeFlag = ALU_Result[16];
                   zeroflag=( !ALU_Out ) ? 1 : 0;
+                end
+
+              OUT:  // TODO: how can i set carry flag for multi shifts ?
+                begin
+                  ALU_Result = B;
                 end
 
               default:begin

@@ -100,7 +100,7 @@ for i,instruction in enumerate(instructions):
             continue
         elif(inst == "SHL" or inst == "SHR"):
             shiftamount = bin(int(dst))[2:].zfill(4)
-            IR = IR[0:6]  + dictionary[src] + "000" + shiftamount
+            IR = IR[0:6]  + dictionary[src] + dictionary[src] + shiftamount #=======================>KIRO
             IRCodes.append( IR + "\n")
             addressCounter = addressCounter + 1
         else:
