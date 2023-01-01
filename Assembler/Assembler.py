@@ -51,7 +51,7 @@ for i,instruction in enumerate(instructions):
         skipAmount = int(instruction.split(' ')[1],16)
         if  skipAmount > addressCounter:
             for i in range(addressCounter,skipAmount + 1):
-                IRCodes.append(" \n")
+                IRCodes.append("0000000000000000" + "\n")
             addressCounter = skipAmount
         else:
             addressCounter = skipAmount
@@ -76,7 +76,7 @@ for i,instruction in enumerate(instructions):
 
     # {* ========================= one operand & no operand ======================== *} 
     if(oneOperand):
-        if(inst == "NOP" or inst == "SETC" or inst == "CLRC"):
+        if(inst == "NOP" or inst == "SETC" or inst == "CLRC" or inst == "RET"):
             IR = IR[0:6] + "0000000000"
         else:
             IR = IR[0:6] + "000" + dictionary[Operands] + "0000" 

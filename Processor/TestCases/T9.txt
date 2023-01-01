@@ -1,0 +1,11 @@
+NOP;
+IN R1;   # R1 = 4
+IN R2;   # R2 = 8
+IN R3;   # R3 = 16
+
+PUSH R1;  
+POP R3;  # R3 = 4
+PUSH R2; 
+POP R4; # R4 = 8
+ADD R4,R3;  # R3 = 12
+MOV R3,R6;

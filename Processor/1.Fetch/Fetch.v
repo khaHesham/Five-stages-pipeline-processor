@@ -1,4 +1,4 @@
-module fetch #(parameter W=16, SIZE=20)(clk, rst, Rdst_D, Rdst_E, WD, BRANCH, FLUSH, PC_ENB, POP_L_H, JUMP_SEL, instr, imm, pc, pc_1);
+module fetch #(parameter W=16, SIZE=20)(clk, rst, Rdst_D, Rdst_E, WD, BRANCH, FLUSH, PC_ENB, POP_L_H, JUMP_SEL, instr, imm, pc, pc_1,ret_address);
     
     localparam START_ADDRESS = 0; //initial value of pc
     localparam ISR = 32'b0; //interrupt service routine address
@@ -10,6 +10,9 @@ module fetch #(parameter W=16, SIZE=20)(clk, rst, Rdst_D, Rdst_E, WD, BRANCH, FL
 
     output [W-1:0] instr, imm;
     output [2*W-1:0] pc, pc_1;
+
+    // TODO: remove this
+    output [31:0] ret_address;
 
     reg [W-1:0] memoinst[2**SIZE-1:0];
 
@@ -24,9 +27,9 @@ module fetch #(parameter W=16, SIZE=20)(clk, rst, Rdst_D, Rdst_E, WD, BRANCH, FL
     //The higher word is padded with 0's while the lower word is concatenated with the higher
     //The most significant bit in POP_L_H acts as an enable while the least
     //determines which word will be written.
-    assign  pop_in = (POP_L_H[0] == 1)? {WD, 16'b0}: {ret_address[31:16], WD};
+    assign  pop_in = (POP_L_H[0] == 1'b0)? {WD, 16'b0}: {ret_address[31:16], WD};
 
-    Register #(2*W) pc_pop (clk, rst, POP_L_H[1], pop_in, ret_address);
+    Register_neg #(2*W) pc_pop (clk, rst, POP_L_H[1], pop_in, ret_address);
 
     MUX #(2*W, 3) pc_mux ('{32'b0, 32'b0, 32'b0, {16'b0, Rdst_E}, ret_address, ISR, {16'b0, Rdst_D}, pc_1}, pc_select, pc_in);
 
