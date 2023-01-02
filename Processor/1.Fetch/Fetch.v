@@ -22,6 +22,9 @@ module fetch #(parameter W=16, SIZE=20)(clk, rst, Rdst_D, Rdst_E, WD, BRANCH, FL
     initial $readmemb("memory.txt", memoinst);
 
     assign pc_select = BRANCH? 3'b100: {1'b0, JUMP_SEL};
+        always @(posedge clk) begin
+        
+    end
 
     //A temp register is used to buffer the popped address on two cycles.
     //The higher word is padded with 0's while the lower word is concatenated with the higher

@@ -1,9 +1,7 @@
 NOP;
 LDM R1,0D;     # R1 = 6
-SETC;
+ADD R1,R2;     # R2 = 13  C->0
 NOT R6;
-NOT R4;
-RTI;
 INC R1;
 
 

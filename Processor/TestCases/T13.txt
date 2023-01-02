@@ -1,0 +1,27 @@
+NOP;
+LDM R1,0D;     # R1 = 6
+NOP;
+CALL R1;       # jmp in pc=6
+INC R5;
+NOT R5;
+NOP;
+NOP;
+NOP;
+NOP;
+NOP;
+NOP;
+ADD R1,R2;     # R2 = 13  C->0
+NOT R0;
+NOT R7;        # R7 = FFFF = -1
+NOT R6;
+RET;
+
+
+
+
+
+
+
+
+
+

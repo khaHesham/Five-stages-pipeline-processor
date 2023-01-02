@@ -17,9 +17,7 @@ module Memo (clk, rst, MEM_READ, MEM_WRITE, MEM_ADDR_SEL, MEM_DATA_SEL, Rsrc, Rd
     MUX #(W, 2) addr_mux ('{sp, ALU, Rdst, Rsrc}, MEM_ADDR_SEL, WA);
     MUX #(W, 3) data_mux ('{16'b0, pc_plus[15:0], pc_plus[31:16], pc[15:0], pc[31:16], {13'b0, flags}, Rdst, Rsrc}, MEM_DATA_SEL, WD);
 
-    always @(negedge clk) begin
-        
-    end
+
 
     Memory memo(clk, rst, MEM_READ, MEM_WRITE, WA[10:0], WD, RD);
 

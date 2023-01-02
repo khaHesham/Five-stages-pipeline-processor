@@ -4,7 +4,7 @@
 `include "../4.Memory/Memo.v"
 `include "../5.WriteBack/WB.v"
 
-module Processor(clk, rst, interrupt, in_port, out_port, pc, imm, EX_signals_1, MEM_signals, WB_signals, ALU_out, flags,instr, WD,WB_SEL,Rsrc_2, sp,shamt_1,HAZARD_POP,ret_state_before,ret_address);
+module Processor(clk, rst, interrupt, in_port, out_port, pc, imm, EX_signals, MEM_signals, WB_signals, ALU_out, flags,instr, WD,WB_SEL,Rsrc_2, sp,shamt_1,HAZARD_POP,ret_state_before,ret_address,FU_src_sel);
     
 //====================================================CONSTANTS=======================================================
     localparam W = 16;
@@ -31,7 +31,7 @@ module Processor(clk, rst, interrupt, in_port, out_port, pc, imm, EX_signals_1, 
     output [31:0] pc;
     output [MEM_SIGS_SIZE-1:0] MEM_signals;
     output [WB_SIGS_SIZE-1:0] WB_signals;
-    output [EX_SIGS_SIZE-1:0] EX_signals_1;
+    output [EX_SIGS_SIZE-1:0] EX_signals;
     output [W-1:0] imm, WD, ALU_out, out_port;
     output [2:0] flags;
     output [W-1:0] sp;
@@ -43,7 +43,8 @@ module Processor(clk, rst, interrupt, in_port, out_port, pc, imm, EX_signals_1, 
     output [2:0] ret_state_before;
     output [31:0] ret_address;
     output [15:0] Rsrc_2;
-   
+    output [1:0]FU_src_sel;
+
     
    
 //=======================================================WIRES========================================================
