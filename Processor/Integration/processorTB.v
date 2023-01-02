@@ -25,8 +25,8 @@ module TB;
   wire [2:0] ret_state_before;
   wire [31:0] ret_address;
   wire [15:0] Rsrc_2;
-
-  Processor processor_inst(clk, rst, interrupt, in_port, out_port, pc, imm, EX_signals, MEM_signals, WB_signals, ALU, flags,instr, WD,WB_SEL,Rsrc_2, sp,shamt_1,HAZARD_POP,ret_state_before,ret_address);
+  wire [1:0] FU_src_sel;
+  Processor processor_inst(clk, rst, interrupt, in_port, out_port, pc, imm, EX_signals, MEM_signals, WB_signals, ALU, flags,instr, WD,WB_SEL,Rsrc_2, sp,shamt_1,HAZARD_POP,ret_state_before,ret_address,FU_src_sel);
   
   always #(T/2) clk = ~clk;
 

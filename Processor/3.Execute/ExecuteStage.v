@@ -66,9 +66,10 @@ output reg [W-1:0] B;          // second operand of ALU
 reg [W-1:0] M1_output;  // output of First Mux  
 reg [W-1:0] M2_output;
 
+
 // Handle selectors
 always @(*) begin
-    case(EX[5:3])  // 1st Mux
+    case(EX[4:3])  // 1st Mux
         Rsrc_M1:
             begin
                 M1_output = Rsrc;

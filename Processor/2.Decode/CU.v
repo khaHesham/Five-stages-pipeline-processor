@@ -39,6 +39,7 @@ module Control_Unit (opcode,interrupt,inst_before_call,inter_state_before,ret_st
     localparam POP_2_RET =3'b010;
     localparam NOP1_RET =3'b011;
     localparam NOP2_RET =3'b100;
+    localparam NOP3_RET=3'b101;
     //reti
     localparam NO_RETI  =3'b000;
     localparam POP_FLAGS =3'b001;
@@ -119,7 +120,7 @@ module Control_Unit (opcode,interrupt,inst_before_call,inter_state_before,ret_st
         pc_enable=0;
         flush=0;
         jump_sel=2'b00;
-        EX_signals=13'b000_0_1101_11_0_01;
+        EX_signals=13'b0000110111001;
         MEM_signals=7'b1010000;
         WB_signals=6'b101100; //TODO: regwrite was 1
         out_signal = 1'b0;
@@ -149,6 +150,17 @@ module Control_Unit (opcode,interrupt,inst_before_call,inter_state_before,ret_st
        NOP1_RET:begin   //NOP2
         ret_state_after=3'b100;
         f_d_buffer_enable=0;
+        pc_enable=0;
+        flush=0;
+        jump_sel=2'b00;
+        EX_signals=13'b0000000000000;
+        MEM_signals=7'b0000000;
+        WB_signals=6'b000000;
+        out_signal = 1'b0;
+       end
+       NOP2_RET:begin    //NOP3
+        ret_state_after=3'b101;
+        f_d_buffer_enable=0;
         pc_enable=1;
         flush=0;
         jump_sel=2'b11;
@@ -157,7 +169,7 @@ module Control_Unit (opcode,interrupt,inst_before_call,inter_state_before,ret_st
         WB_signals=6'b000000;
         out_signal = 1'b0;
        end
-       NOP2_RET:begin    //NOP3
+        NOP3_RET:begin   //NOP4
         ret_state_after=3'b000;
         f_d_buffer_enable=1;
         pc_enable=1;
