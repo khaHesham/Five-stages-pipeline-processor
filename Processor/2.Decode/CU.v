@@ -187,18 +187,7 @@ module Control_Unit (opcode,interrupt,inst_before_call,inter_state_before,ret_st
         ret_state_after=3'b000;
         inter_state_after=2'b00;
          case(reti_state_before)
-        NO_RETI:begin      //pop_flags
-        reti_state_after=3'b001;
-        f_d_buffer_enable=0;
-        pc_enable=0;
-        flush=0;
-        jump_sel=2'b00;
-        EX_signals=13'b0000110111001;
-        MEM_signals=7'b1010000;
-        WB_signals=6'b111000;
-        out_signal = 1'b0;
-        end
-        POP_FLAGS:begin    //pop_1
+        NO_RETI:begin     //pop_1
         reti_state_after=3'b010;
         f_d_buffer_enable=0;
         pc_enable=0;
@@ -209,7 +198,7 @@ module Control_Unit (opcode,interrupt,inst_before_call,inter_state_before,ret_st
         WB_signals=6'b101101;
         out_signal = 1'b0;
         end
-        POP_1_RETI:begin   //pop_2
+        POP_1_RETI:begin      //pop_2
         reti_state_after=3'b011;
         f_d_buffer_enable=0;
         pc_enable=0;
@@ -220,7 +209,18 @@ module Control_Unit (opcode,interrupt,inst_before_call,inter_state_before,ret_st
         WB_signals=6'b101111;
         out_signal = 1'b0;
         end
-        POP_2_RETI:begin   //   NOP1
+        POP_2_RETI:begin   //pop_flags
+        reti_state_after=3'b001;
+        f_d_buffer_enable=0;
+        pc_enable=0;
+        flush=0;
+        jump_sel=2'b00;
+        EX_signals=13'b0000110111001;
+        MEM_signals=7'b1010000;
+        WB_signals=6'b111000;
+        out_signal = 1'b0;
+        end
+        POP_FLAGS:begin   //   NOP1
         reti_state_after=3'b100;
         f_d_buffer_enable=0;
         pc_enable=0;

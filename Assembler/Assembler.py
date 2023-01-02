@@ -76,7 +76,7 @@ for i,instruction in enumerate(instructions):
 
     # {* ========================= one operand & no operand ======================== *} 
     if(oneOperand):
-        if(inst == "NOP" or inst == "SETC" or inst == "CLRC" or inst == "RET"):
+        if(inst == "NOP" or inst == "SETC" or inst == "CLRC" or inst == "RET" or inst == "RTI"):
             IR = IR[0:6] + "0000000000"
         else:
             IR = IR[0:6] + "000" + dictionary[Operands] + "0000" 
