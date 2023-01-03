@@ -1,0 +1,35 @@
+m255
+K4
+z2
+!s11f vlog 2020.1 2020.02, Feb 28 2020
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+dC:/intelFPGA/20.1
+vControl_Unit
+!s110 1672331356
+!i10b 1
+!s100 8S>12>74e7O5LGo_nTZhV2
+!s11b Dg1SIo80bB@j0V0VzS_@n1
+ITBU?3j?BSi:T_A76o;ThM1
+VDg1SIo80bB@j0V0VzS_@n1
+dC:/Daily use/Materials/Senior l Computer engineer/Computer Archtecture/Project/code/Five-stages-pipeline-processor/Processor/project_sim
+w1672331332
+8C:/Daily use/Materials/Senior l Computer engineer/Computer Archtecture/Project/code/Five-stages-pipeline-processor/Processor/2.Decode/CU.v
+FC:/Daily use/Materials/Senior l Computer engineer/Computer Archtecture/Project/code/Five-stages-pipeline-processor/Processor/2.Decode/CU.v
+!i122 0
+L0 1 415
+OV;L;2020.1;71
+r1
+!s85 0
+31
+!s108 1672331356.000000
+!s107 C:/Daily use/Materials/Senior l Computer engineer/Computer Archtecture/Project/code/Five-stages-pipeline-processor/Processor/2.Decode/CU.v|
+!s90 -reportprogress|300|-work|work|-stats=none|C:/Daily use/Materials/Senior l Computer engineer/Computer Archtecture/Project/code/Five-stages-pipeline-processor/Processor/2.Decode/CU.v|
+!i113 1
+o-work work
+tCvgOpt 0
+n@control_@unit

@@ -1,0 +1,17 @@
+NOP;
+LDM R1,0D;     # R1 = 6
+SETC;
+NOT R6;
+NOT R4;
+RTI;
+INC R1;
+
+
+
+
+
+
+
+
+
+

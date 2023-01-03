@@ -1,0 +1,21 @@
+NOP;
+LDM R1,10;    #R1 = 16
+MOV R1,R2;    #R2 = 16
+SHL R2,2;     #R2 = 64
+SHR R1,1;     #R1 = 8
+LDM R3,4;     #R3 = 4
+INC R3;       #R3 = 5
+LDM R5,00FF;
+LDM R6,FF01;
+ADD R5,R6;    #R6=0
+
+
+
+
+
+
+
+
+
+
+

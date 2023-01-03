@@ -1,43 +1,151 @@
 module ALU(
-           input [15:0] A,B,  // ALU 8-bit Inputs                 
-           input ALU_EN, // ALU ensble and clk and rst
-           input [3:0] Function_Control, //functionopcode
-           output [15:0] ALU_Out, // ALU 8-bit Output
-           output CarryOut,NegativeFlag,ZeroFlag // Carry Out Flag ,NegativeFlag,ZeroFlag
+           input [15:0] A,B,                        // ALU 16-bit Inputs                 
+           input ALU_EN,                            // ALU Enable
+           input [3:0] Function_Control,            // ALU_OP
+           input [3:0] shiftamount,                 // shift amount
+           input [2:0] flags_old,
+           output [15:0] ALU_Out,                   // ALU 16-bit Output
+           output CarryOut,NegativeFlag,ZeroFlag    // Carry Out Flag ,NegativeFlag,ZeroFlag
     );
 
+        /*       {    CONSTANTS    }      */
+        /* ------------------------------ */
+        /**/  localparam INC =4'b0000;  /**/
+        /**/  localparam DEC =4'b0001;  /**/
+        /**/  localparam ADD =4'b0010;  /**/
+        /**/                            /**/
+        /**/  localparam SUB =4'b0011;  /**/
+        /**/  localparam MOV =4'b0100;  /**/
+        /**/  localparam NOT =4'b0101;  /**/
+        /**/                            /**/
+        /**/  localparam OR = 4'b0110;  /**/
+        /**/  localparam AND =4'b0111;  /**/
+        /**/  localparam SHL =4'b1000;  /**/
+        /**/                            /**/
+        /**/  localparam SHR =4'b1001;  /**/
+        /**/  localparam SETC=4'b1010;  /**/
+        /**/  localparam CLC =4'b1011;
+              localparam OUT  = 4'b1100;
+              localparam INC_SP= 4'b1101;
+              localparam DEC_SP=4'b1110;
+        /**********************************/
 
-    localparam NOT =4'b0001;
-    localparam ADD =4'b0010;
-    localparam STD =4'b0000;
+    reg [16:0] ALU_Result;
+    reg carry;
+    reg negativeFlag;
+    reg zeroflag;
 
-     reg [16:0] ALU_Result;
-     reg carry;
-
-       // wire [16:0] tmp;
-   // assign tmp ={1'b0,A} + {1'b0,B};
-   // assign CarryOut = tmp[16]; // Carryout flag
 
     always @(*)
     begin
         if(ALU_EN==1)
         begin
-            carry=0;
+            carry=1'b0;
+            negativeFlag=1'b0;
+            zeroflag=1'b0;
+
             case(Function_Control)
-              ADD: // Addition
+              SETC: 
                 begin
-                  ALU_Result = A + B ;
-                  carry=ALU_Result[16];
+                  ALU_Result = 4'hzzzz;
+                  carry = 1;
+                  negativeFlag=flags_old[1];
+                  zeroflag=flags_old[0];
                 end
-              NOT: //  NOT DEST
+
+              CLC: 
+                begin
+                  ALU_Result = 4'hzzzz;
+                  carry = 0;
+                  negativeFlag=flags_old[1];
+                  zeroflag=flags_old[0];
+                end
+
+              INC: 
+                begin
+                  ALU_Result = B + 1;
+                  carry = ALU_Result[16];
+                  zeroflag=( !ALU_Out ) ? 1 : 0;
+                end
+
+              DEC: 
+                begin
+                  ALU_Result = B - 1;
+                  negativeFlag = ALU_Result[16];
+                  zeroflag=( !ALU_Out ) ? 1 : 0; 
+                end
+
+              INC_SP: 
+                begin
+                  ALU_Result = A + 1;
+                end
+
+              DEC_SP: 
+                begin
+                  ALU_Result = A - 1;
+                end
+
+              ADD: 
+                begin
+                  ALU_Result = A + B;
+                  carry=ALU_Result[16];
+                  zeroflag=( !ALU_Out ) ? 1 : 0;
+                end
+
+              SUB: 
+                begin
+                  ALU_Result = A - B;
+                  negativeFlag = ALU_Result[16];
+                  zeroflag=( !ALU_Out ) ? 1 : 0;
+                end
+
+              NOT: 
                 begin
                   ALU_Result = ~B;
+                  zeroflag=( !ALU_Out ) ? 1 : 0;
                 end
-              STD: //  STD
+
+              MOV: 
                 begin
-                  ALU_Result = A; 
-              // $display("ALU_Result=%b for execute IN SORE",ALU_Result);
+                  ALU_Result = A;
+                  zeroflag=( !ALU_Out ) ? 1 : 0;
                 end
+
+              AND: 
+                begin
+                  ALU_Result = A & B;
+                  negativeFlag = ALU_Result[16];
+                  zeroflag=( !ALU_Out ) ? 1 : 0;
+                end
+
+              OR: 
+                begin
+                  ALU_Result = A | B;
+                  negativeFlag = ALU_Result[16];
+                  zeroflag=( !ALU_Out ) ? 1 : 0;
+                end
+
+              SHL:  
+                begin
+                  carry = A[15];  
+                  ALU_Result = A <<< shiftamount ;  // it has to be shifted with shiftamount
+                  negativeFlag = ALU_Result[16];
+                  zeroflag=( !ALU_Out ) ? 1 : 0;
+                end
+
+              SHR:  
+                begin
+                  carry = A[0]; 
+                  ALU_Result = A >>> shiftamount ;  
+                  negativeFlag = ALU_Result[16];
+                  zeroflag=( !ALU_Out ) ? 1 : 0;
+                end
+
+              OUT: 
+                begin
+                  ALU_Result = B;
+                end
+
               default:begin
                 ALU_Result= 16'bZ;
               end
@@ -46,14 +154,12 @@ module ALU(
         else begin
            ALU_Result=16'bZ;
         end
- //$display("out=%b for execute",ALU_Out);
+ 
     end
 
     assign ALU_Out = ALU_Result[15:0]; // ALU out
-
-    assign ZeroFlag =( !ALU_Out ) ? 1 : 0; // Zero flag
-    assign NegativeFlag = (ALU_Out[15]) ? 1:0; // NegativeFlag
-    assign CarryOut=carry; //carry
-
+    assign NegativeFlag = negativeFlag;
+    assign ZeroFlag = zeroflag; // Zero flag
+    assign CarryOut = carry; //carry
 
 endmodule
