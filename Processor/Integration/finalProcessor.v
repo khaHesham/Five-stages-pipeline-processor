@@ -4,7 +4,7 @@
 `include "../4.Memory/Memo.v"
 `include "../5.WriteBack/WB.v"
 
-module Processor(clk, rst, interrupt, in_port, out_port, pc, imm, EX_signals, MEM_signals, WB_signals, ALU_out, flags,instr, WD,WB_SEL,Rsrc_2, sp,shamt_1,HAZARD_POP,ret_state_before,ret_address,FU_src_sel);
+module Processor(clk, rst, interrupt, in_port, out_port, pc, imm, EX_signals, MEM_signals, WB_signals, ALU_out, flags,instr, WD,WB_SEL,Rsrc_2, sp,shamt_1,HAZARD_POP,ret_state_before,ret_address,FU_src_sel,FLAGS_OLD);
     
 //====================================================CONSTANTS=======================================================
     localparam W = 16;
@@ -44,6 +44,8 @@ module Processor(clk, rst, interrupt, in_port, out_port, pc, imm, EX_signals, ME
     output [31:0] ret_address;
     output [15:0] Rsrc_2;
     output [1:0]FU_src_sel;
+
+    output [2:0] FLAGS_OLD;
 
     
    
@@ -114,7 +116,7 @@ module Processor(clk, rst, interrupt, in_port, out_port, pc, imm, EX_signals, ME
     assign {BRANCH_TYPE, CALL, ALU_OP, RSRC_SEL, RDST_SEL, FLAGS_EN, ALU_EN} = EX_signals_1;
 
 
-    ExecuteStage letsCompute (clk, rst, EX_signals_1, FU_src_sel, FU_dst_sel, FLAGS_WRITE, Rsrc_1, Rdst_1, shamt_1, imm_1, sp_1, in_port_2, ALU_out_1, WD,ALU_out_2,ALU_out, flags,sp_2, Rsrc_2, Rdst_2);
+    ExecuteStage letsCompute (clk, rst, EX_signals_1, FU_src_sel, FU_dst_sel, FLAGS_WRITE, Rsrc_1, Rdst_1, shamt_1, imm_1, sp_1, in_port_2, ALU_out_1, WD,ALU_out_2,ALU_out, flags,sp_2, Rsrc_2, Rdst_2,FLAGS_OLD);
 
     Branch jmp_Handler(BRANCH_TYPE,flags,BRANCH);
 

@@ -1,6 +1,6 @@
 `include "../2.Decode/Register.v"
 
-module ExecuteStage (clk,rst,EX,FU_Src_Sel,FU_Dst_Sel,flags_wb,Rsrc,Rdst,shiftamount,Immediate,SP_Low,IN_PORT,ALU_After_E_M,WB,ALU_MW,ALU_Result,flags_out,SP_Before, A, B);
+module ExecuteStage (clk,rst,EX,FU_Src_Sel,FU_Dst_Sel,flags_wb,Rsrc,Rdst,shiftamount,Immediate,SP_Low,IN_PORT,ALU_After_E_M,WB,ALU_MW,ALU_Result,flags_out,SP_Before, A, B,f_in);
 
 // {* =======================  CONSTANTS  ====================== *}
 
@@ -53,6 +53,10 @@ input [W-1:0] ALU_MW;
 output [W-1:0] ALU_Result;
 output [2:0] flags_out;
 output [W-1:0] SP_Before;
+
+
+// TODO: remove this shit 
+output [2:0] f_in;
 
 
 
@@ -151,11 +155,13 @@ always @(*) begin
     endcase
 end
 
-ALU ourALU(A,B,EX[0],EX[8:5],shiftamount,f_in,ALU_Result,Flags[2],Flags[1],Flags[0]);
+ALU ourALU(A,B,EX[0],EX[8:5],shiftamount,f_out,ALU_Result,Flags[2],Flags[1],Flags[0]);
 
-assign f_in=(flags_wb)? WB[3:0] : Flags;
+// assign f_in=(flags_wb)? WB[2:0] : Flags;
 
 Register_neg #(3) flags_inst(clk, rst, EX[1] || flags_wb, f_in, f_out);
+
+assign f_in=(flags_wb)? WB[2:0] : Flags;
 
 assign flags_out = f_out;
 

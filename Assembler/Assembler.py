@@ -49,8 +49,8 @@ for i,instruction in enumerate(instructions):
     pattern = '^.ORG*'
     if(re.search(pattern,instruction)):
         skipAmount = int(instruction.split(' ')[1],16)
-        if  skipAmount > addressCounter:
-            for i in range(addressCounter,skipAmount + 1):
+        if skipAmount > addressCounter:
+            for i in range(addressCounter,skipAmount):
                 IRCodes.append("0000000000000000" + "\n")
             addressCounter = skipAmount
         else:
